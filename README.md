@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 \# Credit Card Fraud Detection Using Machine Learning
 
 
@@ -18,3 +19,7 @@
 
 \- GitHub repository initialized
 
+=======
+# Creditcard-fraud-detection-using-ML
+Capstone_2 Group_6 
+>>>>>>> c8859d435f377391e73e79707e0a29579e4548d3
