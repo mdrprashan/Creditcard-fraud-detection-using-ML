@@ -1,125 +1,148 @@
-# 💳 Credit Card Fraud Detection using Machine Learning
+# Credit Card Fraud Detection API
 
-## 📌 Project Overview
-This project focuses on detecting fraudulent credit card transactions using machine learning techniques. Due to the highly imbalanced nature of fraud datasets, advanced preprocessing and model evaluation strategies were applied to improve detection performance.
+This project packages your fraud detection work into a more realistic machine learning application for a Masters project. It includes:
 
-The project was developed as part of a capstone assignment, demonstrating practical implementation of data preprocessing, model development, and evaluation.
+- a training pipeline that builds and saves a reusable fraud detection model
+- a FastAPI service for single and batch transaction scoring
+- model metadata and health endpoints for operational visibility
 
----
+## Why this is closer to a real-world system
 
-## 📊 Dataset
-- Source: ULB Credit Card Fraud Dataset
-- Total Transactions: 284,807
-- Features: 30 (including anonymized features V1–V28, Time, Amount)
-- Target Variable:
-  - `0` → Normal transaction
-  - `1` → Fraudulent transaction
+Instead of only showing notebook experiments, this repository now supports a common production workflow:
 
----
+1. Train a model from historical transactions
+2. Save the model as a versioned artifact
+3. Expose an API that other systems can call to score new transactions
+4. Return a fraud probability, prediction label, and risk band
 
-## ⚙️ Project Workflow
+This is the kind of structure you can describe in your dissertation, demo in a viva, or extend into a cloud deployment later.
 
-### 🔹 Week 1: Setup & Data Loading
-- Environment setup using Anaconda
-- Required libraries installed
-- Dataset loaded into Pandas DataFrame
-- Initial data inspection performed
+## Project Structure
 
-### 🔹 Week 2: Exploratory Data Analysis (EDA)
-- Summary statistics generated
-- Class imbalance identified
-- Data visualization (histograms, boxplots, correlation heatmap)
-- Data quality checks (missing values, duplicates, outliers)
+```text
+app/
+  main.py            # FastAPI application
+  model_service.py   # Loads model artifact and performs inference
+  schemas.py         # Request/response models
+data/
+  raw/creditcard.csv # Source dataset
+models/              # Saved trained model artifacts
+src/
+  train_model.py     # Training script that saves the model
+main.py              # ASGI entrypoint
+```
 
-### 🔹 Week 3: Data Preprocessing
-- Missing values handled (none found)
-- Duplicate records checked and removed
-- Outliers treated using IQR and capping
-- Feature scaling using StandardScaler
-- Class imbalance handled using SMOTE
-- Feature engineering (Amount_capped)
-- Dataset split into training, validation, and test sets
+## Setup
 
-### 🔹 Week 4: Model Development & Evaluation
-- Implemented multiple models:
-  - Logistic Regression
-  - Random Forest ✅ (Best Model)
-  - Support Vector Machine (SVM)
-  - Isolation Forest (Anomaly Detection)
-- Evaluated models using:
-  - Confusion Matrix
-  - Precision, Recall, F1-score
-- Performed feature importance analysis
+Install dependencies:
 
----
+```bash
+pip install -r requirements.txt
+```
 
-## 🧠 Model Performance Summary
+## Train the model
 
-| Model                | Performance |
-|---------------------|------------|
-| Random Forest       | ⭐ Best performance (high precision & recall) |
-| Logistic Regression | Moderate performance |
-| SVM                 | Poor performance (convergence issues) |
-| Isolation Forest    | Moderate (useful for anomaly detection) |
+```bash
+python src/train_model.py
+```
 
----
+This reads `data/raw/creditcard.csv` and writes the trained artifact to `models/fraud_detection_model.joblib`.
 
-## 🏆 Final Model Selection
+## Run the API
 
-Random Forest was selected as the final model due to its strong ability to:
-- Detect fraudulent transactions accurately
-- Maintain a balance between precision and recall
-- Handle complex patterns in the dataset
+```bash
+uvicorn app.main:app --reload
+```
 
----
+Swagger docs will be available at:
 
-## 🔍 Key Insights
-- The dataset is highly imbalanced (~0.17% fraud cases)
-- Feature importance analysis revealed key variables influencing fraud detection
-- SMOTE significantly improved model performance
-- Ensemble models outperform simpler models for fraud detection
+```text
+http://127.0.0.1:8000/docs
+```
 
----
+## API Endpoints
 
-## 🚨 Real-World Application
+### `GET /health`
 
-This model can be integrated into real-time financial systems to:
-- Monitor transactions continuously
-- Flag suspicious transactions instantly
-- Trigger alerts for fraud investigation
-- Reduce financial losses due to fraud
+Checks whether the API is running and whether a trained model has been loaded.
 
----
+### `GET /model/info`
 
-## 🛠️ Technologies Used
-- Python
-- Pandas, NumPy
-- Matplotlib, Seaborn
-- Scikit-learn
-- Imbalanced-learn (SMOTE)
-- Jupyter Notebook
+Returns:
 
----
+- model name
+- threshold used for fraud classification
+- feature names
+- evaluation metrics captured at training time
 
-## 📁 Project Structure
-├── data/
-├── notebooks/
-├── models/
-├── reports/
-├── src/
-├── eda.py
-├── main.py
-├── model.ipynb
-├── requirements.txt
-└── README.md
+### `POST /predict`
 
+Scores a single transaction.
 
----
+Example request body:
 
-## 📌 Author
-**Prashan Manandhar**
+```json
+{
+  "Time": 0,
+  "V1": -1.3598,
+  "V2": -0.0727,
+  "V3": 2.5363,
+  "V4": 1.3781,
+  "V5": -0.3383,
+  "V6": 0.4623,
+  "V7": 0.2395,
+  "V8": 0.0986,
+  "V9": 0.3637,
+  "V10": 0.0907,
+  "V11": -0.5515,
+  "V12": -0.6178,
+  "V13": -0.9913,
+  "V14": -0.3111,
+  "V15": 1.4681,
+  "V16": -0.4704,
+  "V17": 0.2079,
+  "V18": 0.0257,
+  "V19": 0.4039,
+  "V20": 0.2514,
+  "V21": -0.0183,
+  "V22": 0.2778,
+  "V23": -0.1104,
+  "V24": 0.0669,
+  "V25": 0.1285,
+  "V26": -0.1891,
+  "V27": 0.1335,
+  "V28": -0.0210,
+  "Amount": 149.62
+}
+```
 
----
+Example response:
 
-## 📎 Notes
-This project is for academic and learning purposes, demonstrating machine learning techniques for fraud detection.
+```json
+{
+  "fraud_probability": 0.017421,
+  "predicted_label": 0,
+  "risk_band": "low",
+  "threshold_used": 0.5
+}
+```
+
+### `POST /predict/batch`
+
+Scores multiple transactions in one request.
+
+## Good Masters project extensions
+
+If you want to make this feel even more industry-grade, the strongest next additions would be:
+
+- threshold tuning based on business cost of false positives vs false negatives
+- model versioning and experiment tracking with MLflow
+- feature store style preprocessing shared by training and inference
+- database logging of scored transactions and outcomes
+- authentication and rate limiting for the API
+- Docker deployment
+- drift monitoring and retraining workflow
+
+## Important project note
+
+This dataset uses anonymized PCA-based features (`V1` to `V28`), which is excellent for learning but not identical to live bank data pipelines. In your report, it is worth saying that this API demonstrates the architecture of a fraud detection service, while a real bank would add streaming ingestion, stronger governance, richer merchant/device features, and human review workflows.
