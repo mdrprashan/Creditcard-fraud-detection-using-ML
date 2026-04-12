@@ -1,23 +1,189 @@
-# Credit Card Fraud Detection API
+# 💳 Credit Card Fraud Detection API (Machine Learning Project)
 
-This project packages your fraud detection work into a more realistic machine learning application for a Masters project. It includes:
+## 📌 Project Overview
 
-- a training pipeline that builds and saves a reusable fraud detection model
-- a FastAPI service for single and batch transaction scoring
-- model metadata and health endpoints for operational visibility
+This project develops a machine learning-based fraud detection system and extends it into a realistic application using a FastAPI service. The system detects fraudulent credit card transactions using supervised learning techniques and is designed to simulate a real-world financial fraud detection pipeline.
 
-## Why this is closer to a real-world system
+The project evolves from data preprocessing and model development to a deployable API capable of scoring transactions in real time. It also demonstrates a full machine learning lifecycle, progressing from data analysis to a production-ready fraud detection system.
 
-Instead of only showing notebook experiments, this repository now supports a common production workflow:
+---
 
-1. Train a model from historical transactions
-2. Save the model as a versioned artifact
-3. Expose an API that other systems can call to score new transactions
-4. Return a fraud probability, prediction label, and risk band
+## 📈 Weekly Progress Overview
 
-This is the kind of structure you can describe in your dissertation, demo in a viva, or extend into a cloud deployment later.
+This project was developed progressively across multiple weeks, evolving from basic data analysis to a real-world deployable fraud detection system.
 
-## Project Structure
+### Week 1 – Problem Understanding & Setup
+- Defined project scope and objectives
+- Set up development environment using Python, Jupyter, and GitHub
+- Loaded and explored the dataset structure
+- Organized project folder structure for machine learning development
+
+### Week 2 – Exploratory Data Analysis (EDA)
+- Performed summary statistics and data understanding
+- Identified severe class imbalance in the fraud dataset
+- Visualized transaction patterns using histograms, boxplots, and correlation heatmaps
+- Checked data quality issues such as missing values and duplicates
+
+### Week 3 – Data Preprocessing
+- Handled duplicate and inconsistent records
+- Detected and treated outliers using statistical methods
+- Applied feature scaling using StandardScaler
+- Split the dataset into training, validation, and test sets
+- Applied SMOTE to address class imbalance
+- Trained an initial Logistic Regression model
+
+### Week 4 – Model Development
+- Implemented multiple baseline models:
+  - Logistic Regression
+  - Random Forest
+  - Support Vector Machine (SVM)
+  - Isolation Forest
+- Evaluated models using:
+  - Precision
+  - Recall
+  - F1-score
+  - Confusion Matrix
+  - ROC-AUC
+- Identified Random Forest as the strongest baseline model
+- Performed feature importance analysis
+
+### Week 5 – Model Optimization & Real-World Enhancement
+- Applied hyperparameter tuning using RandomizedSearchCV
+- Engineered real-world inspired fraud features such as transaction timing and abnormal spending indicators
+- Implemented Gradient Boosting for additional comparison
+- Compared model performance and selected the tuned Random Forest model
+- Improved real-world applicability of the model using behavioural features
+
+### Final Stage – Real-World Application
+- Designed a FastAPI-based fraud detection API
+- Enabled real-time transaction scoring workflow
+- Structured the project as a practical deployment-ready system
+
+---
+
+## 🎯 Objectives
+
+- Detect fraudulent credit card transactions using machine learning
+- Handle imbalanced datasets effectively
+- Improve fraud detection using real-world feature engineering
+- Compare multiple machine learning models and select the best performer
+- Deploy the trained model as an API for real-time inference
+- Simulate a realistic fraud detection system for banking or fintech use cases
+
+---
+
+## 🧠 Machine Learning Approach
+
+### Models Implemented
+- Logistic Regression
+- Random Forest
+- Support Vector Machine (SVM)
+- Isolation Forest
+- Gradient Boosting
+
+### Final Model Selection
+**Tuned Random Forest** was selected as the final model due to:
+- strong balance between precision and recall
+- high F1-score for fraud detection
+- robust performance on imbalanced data
+- better real-world applicability compared to other models
+- feature importance interpretability
+
+---
+
+## ⚙️ Feature Engineering (Real-World Inspired)
+
+To simulate realistic fraud detection scenarios, additional features were created:
+
+- `transaction_hour` → captures time-based patterns
+- `is_night_transaction` → detects unusual night activity
+- `is_high_amount` → flags high-value transactions
+- `amount_to_median_ratio` → deviation from normal spending
+- `amount_deviation_from_mean` → abnormal behaviour detection
+- `amount_log` → reduces skewness in transaction amount
+- `risk_amount_flag` → identifies top 1% high-risk transactions
+- `amount_percentile` → measures relative transaction ranking
+- `amount_spike` → detects sudden spending changes
+- `high_risk_combo` → combines multiple fraud indicators
+- `amount_squared` → captures extreme value influence
+- `log_time` → improves time-based modelling
+- `time_amount_interaction` → behavioural interaction feature
+
+These features improve the model’s ability to capture real-world fraud patterns and make the system more practical for deployment.
+
+---
+
+## 📊 Model Performance
+
+### Final Tuned Random Forest
+- Precision (Fraud): ~0.87–0.90
+- Recall (Fraud): ~0.81–0.82
+- F1-score (Fraud): ~0.85
+- ROC-AUC: ~0.91+
+
+### Gradient Boosting
+- Higher fraud recall (~0.85)
+- Significantly lower fraud precision (~0.11)
+- Less suitable due to high false positives
+
+### SVM
+- Weak performance on the large imbalanced dataset
+- Convergence and scalability limitations
+
+### Logistic Regression
+- Useful baseline model
+- Lower ability to capture complex fraud patterns compared to Random Forest
+
+---
+
+## 🔧 Data Preprocessing
+
+The dataset was preprocessed to ensure data quality and suitability for model training.
+
+Preprocessing included:
+- checking for missing values
+- handling duplicate records
+- treating outliers using statistical methods
+- applying StandardScaler for numerical normalization
+- handling class imbalance using SMOTE
+- splitting data into training, validation, and test sets
+
+---
+
+## 🔍 Hyperparameter Tuning
+
+RandomizedSearchCV was used to optimize the Random Forest model. The tuning process explored parameters such as:
+- number of estimators
+- maximum depth
+- minimum samples split
+- minimum samples leaf
+- class weights
+- feature selection strategy
+
+This improved model generalization, stability, and fraud detection performance.
+
+---
+
+## 🌍 Real-World System Design
+
+This project extends beyond notebook experimentation into a practical fraud detection architecture.
+
+### Workflow
+1. Historical transaction data is used to train the model
+2. The trained model is saved as a reusable artifact
+3. A FastAPI service loads the model
+4. New transactions are sent to the API
+5. The API returns:
+   - fraud probability
+   - predicted label
+   - risk band
+6. The result can be used by banking systems, fintech platforms, or payment gateways
+
+This structure is suitable for academic demonstration and can be extended into a production deployment later.
+
+---
+
+## 📁 Project Structure
 
 ```text
 app/
@@ -30,119 +196,5 @@ models/              # Saved trained model artifacts
 src/
   train_model.py     # Training script that saves the model
 main.py              # ASGI entrypoint
-```
-
-## Setup
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Train the model
-
-```bash
-python src/train_model.py
-```
-
-This reads `data/raw/creditcard.csv` and writes the trained artifact to `models/fraud_detection_model.joblib`.
-
-## Run the API
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Swagger docs will be available at:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-## API Endpoints
-
-### `GET /health`
-
-Checks whether the API is running and whether a trained model has been loaded.
-
-### `GET /model/info`
-
-Returns:
-
-- model name
-- threshold used for fraud classification
-- feature names
-- evaluation metrics captured at training time
-
-### `POST /predict`
-
-Scores a single transaction.
-
-Example request body:
-
-```json
-{
-  "Time": 0,
-  "V1": -1.3598,
-  "V2": -0.0727,
-  "V3": 2.5363,
-  "V4": 1.3781,
-  "V5": -0.3383,
-  "V6": 0.4623,
-  "V7": 0.2395,
-  "V8": 0.0986,
-  "V9": 0.3637,
-  "V10": 0.0907,
-  "V11": -0.5515,
-  "V12": -0.6178,
-  "V13": -0.9913,
-  "V14": -0.3111,
-  "V15": 1.4681,
-  "V16": -0.4704,
-  "V17": 0.2079,
-  "V18": 0.0257,
-  "V19": 0.4039,
-  "V20": 0.2514,
-  "V21": -0.0183,
-  "V22": 0.2778,
-  "V23": -0.1104,
-  "V24": 0.0669,
-  "V25": 0.1285,
-  "V26": -0.1891,
-  "V27": 0.1335,
-  "V28": -0.0210,
-  "Amount": 149.62
-}
-```
-
-Example response:
-
-```json
-{
-  "fraud_probability": 0.017421,
-  "predicted_label": 0,
-  "risk_band": "low",
-  "threshold_used": 0.5
-}
-```
-
-### `POST /predict/batch`
-
-Scores multiple transactions in one request.
-
-## Good Masters project extensions
-
-If you want to make this feel even more industry-grade, the strongest next additions would be:
-
-- threshold tuning based on business cost of false positives vs false negatives
-- model versioning and experiment tracking with MLflow
-- feature store style preprocessing shared by training and inference
-- database logging of scored transactions and outcomes
-- authentication and rate limiting for the API
-- Docker deployment
-- drift monitoring and retraining workflow
-
-## Important project note
-
-This dataset uses anonymized PCA-based features (`V1` to `V28`), which is excellent for learning but not identical to live bank data pipelines. In your report, it is worth saying that this API demonstrates the architecture of a fraud detection service, while a real bank would add streaming ingestion, stronger governance, richer merchant/device features, and human review workflows.
+README.md
+requirements.txt
