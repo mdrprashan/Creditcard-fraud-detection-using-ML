@@ -198,3 +198,28 @@ src/
 main.py              # ASGI entrypoint
 README.md
 requirements.txt
+
+## Week 7-8 Progress (Advanced Models & Deep Learning)
+
+This stage extends the fraud detection system using anomaly detection and deep learning approaches.
+
+### Models Implemented
+- Enhanced Random Forest (with K-Fold Validation)
+- Isolation Forest (one-class classification)
+- Local Outlier Factor (LOF)
+- Multi-Layer Perceptron (MLP)
+- Autoencoder (unsupervised anomaly detection)
+- LSTM (sequential deep learning model)
+
+### Key Findings
+- Autoencoder achieved the highest ROC-AUC (~0.96) but produced more false positives.
+- Enhanced Random Forest provided the best balance of precision and recall.
+- LSTM underperformed due to lack of sequential structure in the dataset.
+
+### Conclusion
+The Enhanced Random Forest model was selected as the final model for deployment due to its robustness and balanced performance.
+
+### Future Work
+- Integrate LLM for explainable fraud detection
+- Develop API and dashboard interface
+- Improve sequential modelling using real customer-level data
