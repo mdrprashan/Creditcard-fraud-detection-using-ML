@@ -223,3 +223,11 @@ The Enhanced Random Forest model was selected as the final model for deployment 
 - Integrate LLM for explainable fraud detection
 - Develop API and dashboard interface
 - Improve sequential modelling using real customer-level data
+
+## 🚀 Week 7/8 Progress
+
+- Developed FastAPI backend for fraud detection
+- Implemented real-time prediction endpoint
+- Added fraud probability, risk band, and explanation
+- Integrated Swagger UI for testing
+- Prepared system for UI and LLM integration
