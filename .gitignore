@@ -3,3 +3,4 @@ data/processed/*
 __pycache__/
 .ipynb_checkpoints/
 models/*.pklfraudshield.db
+fraudshield.db
