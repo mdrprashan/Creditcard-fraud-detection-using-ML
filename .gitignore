@@ -24,4 +24,6 @@ build/
 
 # OS
 .DS_Store
-Thumbs.db
+Thumbs.dbdata/raw/fraudTrain.csv
+data/raw/creditcard.csv
+data/
