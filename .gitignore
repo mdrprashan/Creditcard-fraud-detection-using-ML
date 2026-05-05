@@ -1,6 +1,27 @@
-data/raw/*
-data/processed/*
-__pycache__/
-.ipynb_checkpoints/
-models/*.pklfraudshield.db
+# Environment variables - NEVER commit this file
+.env
+
+# Database - contains user data and passwords
 fraudshield.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Anaconda
+*.egg-info/
+dist/
+build/
+
+# Model files (large - store separately)
+# *.pkl
+
+# OS
+.DS_Store
+Thumbs.db

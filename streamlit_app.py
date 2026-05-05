@@ -20,8 +20,17 @@ try:
 except ImportError:
     GEMINI_AVAILABLE = False
 
-GEMINI_API_KEY = "AIzaSyDOR2zbGX04uBqeTNsrqcnqCzCeAY1rml0"
-if GEMINI_AVAILABLE:
+# ── Credentials loaded from environment variables ─────────────────────────────
+# Never hardcode credentials — store them in a .env file locally
+from dotenv import load_dotenv
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+EMAIL_SENDER   = os.getenv("EMAIL_SENDER",   "")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
+ADMIN_EMAIL    = os.getenv("ADMIN_EMAIL",    "")
+
+if GEMINI_AVAILABLE and GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 st.set_page_config(
@@ -814,9 +823,7 @@ init_db()
 # ── EMAIL CONFIGURATION ───────────────────────────────────────────────────────
 # Replace with your Gmail address and App Password
 # Get App Password: myaccount.google.com/security → App passwords
-EMAIL_SENDER   = "mdrprashan10@gmail.com"
-EMAIL_PASSWORD = "lzdqxddqicsptbkf"
-ADMIN_EMAIL    = "mdrprashan10@gmail.com"
+# ── Email configuration loaded from .env ─────────────────────────────────────
 
 def send_email(to_email: str, subject: str, html_body: str) -> bool:
     """Send an HTML email. Returns True if sent successfully."""
@@ -1688,16 +1695,14 @@ def render_sidebar():
 
         st.markdown("<div class='sec-label' style='margin:0 0.5rem 0.75rem;'>Navigation</div>", unsafe_allow_html=True)
 
-        # Get current page for syncing radio
-        cur = st.session_state.get("current_page", "🏠  Dashboard")
-
         if role=="admin":
             admin_opts = [
                 "🏠  Dashboard","👥  User Management","🖥️  Active Sessions",
                 "📊  Analytics","📋  Audit Logs","⚙️  Model Deployment","📢  Announcements"
             ]
-            cur_idx = next((i for i,o in enumerate(admin_opts) if cur in o or o in cur), 0)
-            page = st.radio("", admin_opts, index=cur_idx, label_visibility="collapsed")
+            if "admin_nav" not in st.session_state:
+                st.session_state.admin_nav = admin_opts[0]
+            page = st.radio("", admin_opts, key="admin_nav", label_visibility="collapsed")
             pending = st.session_state.pending_users
             if pending:
                 st.markdown(f"""
@@ -1714,20 +1719,24 @@ def render_sidebar():
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
         elif role=="researcher":
             res_opts = [
                 "🏠  Dashboard","🔬  Model Training","📈  Evaluation",
                 "📉  ROC & PR Curves","🕸️  Model Radar","🔍  Feature Analysis","📤  Export"
             ]
-            cur_idx = next((i for i,o in enumerate(res_opts) if cur in o or o in cur), 0)
-            page = st.radio("", res_opts, index=cur_idx, label_visibility="collapsed")
+            if "res_nav" not in st.session_state:
+                st.session_state.res_nav = res_opts[0]
+            page = st.radio("", res_opts, key="res_nav", label_visibility="collapsed")
+
         else:
             user_opts = [
                 "🏠  Dashboard","🔎  Single Transaction","📂  Batch Upload",
                 "📜  History","ℹ️  About"
             ]
-            cur_idx = next((i for i,o in enumerate(user_opts) if cur in o or o in cur), 0)
-            page = st.radio("", user_opts, index=cur_idx, label_visibility="collapsed")
+            if "user_nav" not in st.session_state:
+                st.session_state.user_nav = user_opts[0]
+            page = st.radio("", user_opts, key="user_nav", label_visibility="collapsed")
 
         st.markdown("<div style='margin-top:1.5rem;'>", unsafe_allow_html=True)
         if st.button("↩  Sign Out"):
@@ -4073,10 +4082,18 @@ def main():
     page = render_sidebar()
     role = st.session_state.role
 
-    # If a dashboard quick-nav button was clicked, override and sync
+    # If a dashboard quick-nav button was clicked, sync the radio key and use that page
     if st.session_state.nav_page:
-        page = st.session_state.nav_page
+        nav = st.session_state.nav_page
         st.session_state.nav_page = None
+        # Sync the correct radio key so sidebar highlights correctly
+        if role == "admin":
+            st.session_state.admin_nav = nav
+        elif role == "researcher":
+            st.session_state.res_nav = nav
+        else:
+            st.session_state.user_nav = nav
+        page = nav
 
     # Always keep current_page in sync so sidebar highlights correctly
     st.session_state.current_page = page
