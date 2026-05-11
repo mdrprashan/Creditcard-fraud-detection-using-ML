@@ -40,641 +40,633 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── PREMIUM CSS ───────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-
-/* ── Root Variables ── */
-:root {
-  --bg-base:        #04060f;
-  --bg-surface:     rgba(255,255,255,0.03);
-  --bg-elevated:    rgba(255,255,255,0.055);
-  --bg-overlay:     rgba(255,255,255,0.08);
-  --border:         rgba(255,255,255,0.07);
-  --border-bright:  rgba(0,212,255,0.25);
-  --cyan:           #00d4ff;
-  --cyan-dim:       rgba(0,212,255,0.12);
-  --cyan-glow:      rgba(0,212,255,0.35);
-  --violet:         #7c3aed;
+# ── THEME CSS FUNCTION ────────────────────────────────────────────────────────
+def inject_css(theme="dark"):
+    if theme == "light":
+        css_vars = """
+  --bg-base:        #F8FAFC;
+  --bg-surface:     #FFFFFF;
+  --bg-elevated:    #F1F5F9;
+  --bg-overlay:     #E2E8F0;
+  --border:         #E2E8F0;
+  --border-bright:  #7C3AED;
+  --primary:        #7C3AED;
+  --primary-dim:    rgba(124,58,237,0.1);
+  --primary-glow:   rgba(124,58,237,0.2);
+  --cyan:           #0891B2;
+  --cyan-dim:       rgba(8,145,178,0.1);
+  --violet:         #7C3AED;
+  --violet-dim:     rgba(124,58,237,0.1);
+  --green:          #059669;
+  --green-dim:      rgba(5,150,105,0.08);
+  --red:            #DC2626;
+  --red-dim:        rgba(220,38,38,0.08);
+  --amber:          #D97706;
+  --amber-dim:      rgba(217,119,6,0.08);
+  --text-primary:   #0F172A;
+  --text-secondary: #475569;
+  --text-muted:     #94A3B8;
+  --btn-text:       #FFFFFF;
+  --sidebar-bg:     #FFFFFF;
+  --sidebar-border: #E2E8F0;
+  --card-shadow:    0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --card-hover:     0 4px 16px rgba(0,0,0,0.12);
+"""
+        mesh_bg     = "#F8FAFC"
+        sidebar_bg  = "#FFFFFF"
+        body_bg     = "#F8FAFC"
+    else:
+        css_vars = """
+  --bg-base:        #080B16;
+  --bg-surface:     #0F1423;
+  --bg-elevated:    #161C30;
+  --bg-overlay:     #1E2540;
+  --border:         rgba(255,255,255,0.08);
+  --border-bright:  rgba(124,58,237,0.5);
+  --primary:        #7C3AED;
+  --primary-dim:    rgba(124,58,237,0.15);
+  --primary-glow:   rgba(124,58,237,0.3);
+  --cyan:           #06B6D4;
+  --cyan-dim:       rgba(6,182,212,0.12);
+  --violet:         #7C3AED;
   --violet-dim:     rgba(124,58,237,0.12);
-  --green:          #00e676;
-  --green-dim:      rgba(0,230,118,0.1);
-  --red:            #ff1744;
-  --red-dim:        rgba(255,23,68,0.1);
-  --amber:          #ffab00;
-  --amber-dim:      rgba(255,171,0,0.1);
-  --text-primary:   #eef2ff;
-  --text-secondary: #8892a4;
-  --text-muted:     #4a5568;
-  --font-display:   'Outfit', sans-serif;
-  --font-body:      'Plus Jakarta Sans', sans-serif;
-  --font-mono:      'JetBrains Mono', monospace;
-  --radius-sm:      8px;
-  --radius-md:      12px;
-  --radius-lg:      18px;
-  --radius-xl:      24px;
-}
+  --green:          #10B981;
+  --green-dim:      rgba(16,185,129,0.1);
+  --red:            #EF4444;
+  --red-dim:        rgba(239,68,68,0.1);
+  --amber:          #F59E0B;
+  --amber-dim:      rgba(245,158,11,0.1);
+  --text-primary:   #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted:     #475569;
+  --btn-text:       #FFFFFF;
+  --sidebar-bg:     #0A0D1A;
+  --sidebar-border: rgba(255,255,255,0.06);
+  --card-shadow:    0 1px 3px rgba(0,0,0,0.4);
+  --card-hover:     0 8px 32px rgba(0,0,0,0.5);
+"""
+        mesh_bg     = "#080B16"
+        sidebar_bg  = "#0A0D1A"
+        body_bg     = "#080B16"
 
-/* ── Base Reset ── */
-html, body, [class*="css"] {
-  font-family: var(--font-body);
-  background-color: var(--bg-base);
-  color: var(--text-primary);
-}
+    st.markdown(f"""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
 
-/* ── Animated mesh background ── */
-.main {
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,212,255,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 30% at 50% 50%, rgba(0,230,118,0.02) 0%, transparent 70%),
-    var(--bg-base);
-}
+/* ─────────────── VARIABLES ─────────────── */
+:root {{{css_vars}
+  --font-display: 'Manrope', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-2xl: 28px;
+}}
 
-/* ── Sidebar ── */
-section[data-testid="stSidebar"] {
-  background: linear-gradient(180deg, #070a18 0%, #04060f 100%);
-  border-right: 1px solid var(--border);
-  backdrop-filter: blur(20px);
-}
-section[data-testid="stSidebar"] .block-container {
-  padding: 1rem 0.75rem;
-}
-
-/* ── Main container ── */
-.main .block-container {
-  background: transparent;
-  padding: 2rem 2.5rem;
-  max-width: 1440px;
-}
-
-/* ── Glassmorphism card ── */
-.glass {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-}
-.glass:hover {
-  border-color: var(--border-bright);
-  box-shadow: 0 0 0 1px rgba(0,212,255,0.08), 0 8px 32px rgba(0,0,0,0.4);
-}
-.glass-cyan  { border-left: 2px solid var(--cyan); }
-.glass-green { border-left: 2px solid var(--green); }
-.glass-red   { border-left: 2px solid var(--red); }
-.glass-amber { border-left: 2px solid var(--amber); }
-.glass-violet{ border-left: 2px solid var(--violet); }
-
-/* ── Hero section ── */
-.hero-wrap {
-  position: relative;
-  border-radius: var(--radius-xl);
-  padding: 2.5rem 3rem;
-  margin-bottom: 2rem;
-  overflow: hidden;
-  background: linear-gradient(135deg,
-    rgba(0,212,255,0.06) 0%,
-    rgba(124,58,237,0.08) 50%,
-    rgba(0,212,255,0.04) 100%);
-  border: 1px solid rgba(0,212,255,0.15);
-}
-.hero-wrap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(0,212,255,0.03) 100%);
-  pointer-events: none;
-}
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-}
-.hero-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--cyan);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.hero-eyebrow::before {
-  content: '';
-  display: inline-block;
-  width: 20px;
-  height: 1px;
-  background: var(--cyan);
-}
-.hero-title {
-  font-family: var(--font-display);
-  font-size: 2.4rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin: 0 0 0.5rem;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-.hero-sub {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  margin: 0;
-  font-weight: 400;
-}
-.hero-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1.2rem;
-}
-.chip {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  border: 1px solid var(--border-bright);
-  color: var(--cyan);
-  background: var(--cyan-dim);
-  letter-spacing: 0.05em;
-}
-
-/* ── Section label ── */
-.sec-label {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--cyan);
-  margin-bottom: 1rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.sec-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--border), transparent);
-}
-
-/* ── Metric cards ── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.kpi {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.4rem 1.2rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-.kpi::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-  opacity: 0.6;
-}
-.kpi:hover {
-  border-color: rgba(0,212,255,0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 20px rgba(0,212,255,0.05);
-}
-.kpi-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
-  margin-bottom: 0.6rem;
-}
-.kpi-value {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--cyan);
-  line-height: 1;
-}
-.kpi-sub {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  margin-top: 0.3rem;
-}
-
-/* ── Buttons ── */
-.stButton > button {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.88rem;
-  letter-spacing: 0.02em;
-  color: #04060f;
-  background: linear-gradient(135deg, #00d4ff, #0099cc);
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 1.4rem;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
-}
-.stButton > button::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.stButton > button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,212,255,0.4), 0 0 0 1px rgba(0,212,255,0.3);
-}
-.stButton > button:hover::after { opacity: 1; }
-.stButton > button:active { transform: translateY(0); }
-
-/* ── Inputs ── */
-.stTextInput > div > div > input,
-.stNumberInput > div > div > input {
-  background: var(--bg-elevated) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius-sm) !important;
-  color: var(--text-primary) !important;
+/* ─────────────── BASE — LARGER READABLE FONTS ─────────────── */
+html, body, [class*="css"] {{
   font-family: var(--font-body) !important;
-  transition: border-color 0.2s ease !important;
-}
-.stTextInput > div > div > input:focus,
-.stNumberInput > div > div > input:focus {
-  border-color: var(--cyan) !important;
-  box-shadow: 0 0 0 3px var(--cyan-dim) !important;
-}
-.stSelectbox > div > div {
-  background: var(--bg-elevated) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius-sm) !important;
+  background-color: var(--bg-base) !important;
   color: var(--text-primary) !important;
-}
+  font-size: 15px !important;
+  -webkit-font-smoothing: antialiased;
+}}
+.main {{
+  background: var(--bg-base) !important;
+  background-image:
+    radial-gradient(ellipse 70% 40% at 10% 0%, rgba(124,58,237,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 90% 100%, rgba(6,182,212,0.04) 0%, transparent 60%) !important;
+}}
+.main .block-container {{
+  background: transparent !important;
+  padding: 1.75rem 2.25rem !important;
+  max-width: 1400px !important;
+}}
 
-/* ── Sidebar user card ── */
-.user-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.2rem;
-  text-align: center;
-  margin-bottom: 1.2rem;
-  position: relative;
-  overflow: hidden;
-}
-.user-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-}
-.user-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--cyan), var(--violet));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: white;
-  margin: 0 auto 0.75rem;
-  box-shadow: 0 0 20px rgba(0,212,255,0.3);
-}
-.user-name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-}
-.user-handle {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-top: 0.2rem;
-}
-
-/* ── Badges ── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.badge-admin    { background: rgba(255,23,68,0.12);   color: #ff6b81; border: 1px solid rgba(255,23,68,0.25); }
-.badge-research { background: rgba(255,171,0,0.12);   color: #ffc857; border: 1px solid rgba(255,171,0,0.25); }
-.badge-user     { background: rgba(0,230,118,0.12);   color: #69f0ae; border: 1px solid rgba(0,230,118,0.25); }
-.badge-gemini   { background: rgba(124,58,237,0.15);  color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
-.badge-verified { background: rgba(0,230,118,0.1);    color: #69f0ae; border: 1px solid rgba(0,230,118,0.2); font-size:0.6rem; }
-
-/* ── Status dot (animated pulse) ── */
-.dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  animation: pulse-dot 2s infinite;
-}
-.dot-green  { background: var(--green);  box-shadow: 0 0 6px var(--green); }
-.dot-red    { background: var(--red);    box-shadow: 0 0 6px var(--red); }
-.dot-cyan   { background: var(--cyan);   box-shadow: 0 0 6px var(--cyan); }
-.dot-amber  { background: var(--amber);  box-shadow: 0 0 6px var(--amber); }
-@keyframes pulse-dot {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.6; transform: scale(0.85); }
-}
-
-/* ── Result boxes ── */
-.result-box {
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  animation: fadeSlideUp 0.4s ease;
-}
-.result-fraud {
-  background: radial-gradient(ellipse at center top, rgba(255,23,68,0.12) 0%, rgba(255,23,68,0.04) 60%, transparent 100%);
-  border: 1px solid rgba(255,23,68,0.3);
-}
-.result-legit {
-  background: radial-gradient(ellipse at center top, rgba(0,230,118,0.1) 0%, rgba(0,230,118,0.03) 60%, transparent 100%);
-  border: 1px solid rgba(0,230,118,0.3);
-}
-.result-icon { font-size: 3rem; margin-bottom: 0.5rem; animation: bounceIn 0.5s ease; }
-.result-verdict {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-}
-.verdict-fraud { color: var(--red); text-shadow: 0 0 30px rgba(255,23,68,0.4); }
-.verdict-legit { color: var(--green); text-shadow: 0 0 30px rgba(0,230,118,0.4); }
-
-/* ── Log row ── */
-.log-row {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 1rem;
-  margin-bottom: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  transition: border-color 0.2s;
-}
-.log-row:hover { border-color: rgba(0,212,255,0.15); }
-
-/* ── OTP box ── */
-.otp-wrap {
-  background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(124,58,237,0.06));
-  border: 1px solid rgba(0,212,255,0.2);
-  border-radius: var(--radius-xl);
-  padding: 2.5rem;
-  text-align: center;
-  margin: 1rem 0;
-  position: relative;
-  overflow: hidden;
-}
-.otp-code {
-  font-family: var(--font-mono);
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--cyan);
-  letter-spacing: 0.6rem;
-  margin: 1rem 0;
-  text-shadow: 0 0 30px rgba(0,212,255,0.5);
-  animation: glowPulse 2s ease-in-out infinite;
-}
-@keyframes glowPulse {
-  0%,100% { text-shadow: 0 0 20px rgba(0,212,255,0.4); }
-  50%      { text-shadow: 0 0 40px rgba(0,212,255,0.8), 0 0 60px rgba(0,212,255,0.3); }
-}
-
-/* ── Nav card buttons (used in user dashboard) ── */
-.nav-card-btn > button {
-    background:    var(--bg-elevated) !important;
-    border:        1px solid var(--border) !important;
-    border-radius: 10px !important;
-    padding:       1rem 1.2rem !important;
-    text-align:    left !important;
-    width:         100% !important;
-    color:         var(--text-primary) !important;
-    font-family:   var(--font-body) !important;
-    font-size:     0.9rem !important;
-    font-weight:   600 !important;
-    transition:    all 0.2s ease !important;
-    height:        auto !important;
-    min-height:    70px !important;
-}
-.nav-card-btn > button:hover {
-    border-color:  rgba(0,212,255,0.35) !important;
-    background:    rgba(0,212,255,0.06) !important;
-    transform:     translateX(4px) !important;
-    box-shadow:    0 0 16px rgba(0,212,255,0.12) !important;
-    color:         #00d4ff !important;
-}
-div[data-testid="stRadio"] > div {
-  gap: 0.25rem;
-  flex-direction: column;
-}
-div[data-testid="stRadio"] label {
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  padding: 0.55rem 0.75rem;
-  color: var(--text-secondary);
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: block;
-}
-div[data-testid="stRadio"] label:hover {
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  border-color: var(--border);
-}
-div[data-testid="stRadio"] [data-checked="true"] label,
-div[data-testid="stRadio"] input:checked + div {
-  background: var(--cyan-dim);
-  color: var(--cyan);
-  border-color: rgba(0,212,255,0.25);
-}
-
-/* ── Animations ── */
-@keyframes fadeSlideUp {
-  from { opacity:0; transform:translateY(16px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-@keyframes bounceIn {
-  0%   { transform:scale(0.5); opacity:0; }
-  60%  { transform:scale(1.15); }
-  100% { transform:scale(1); opacity:1; }
-}
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-.shimmer-text {
-  background: linear-gradient(90deg, var(--text-secondary) 0%, var(--cyan) 50%, var(--text-secondary) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 3s linear infinite;
-}
-
-/* ── Brand wordmark ── */
-.brand-wrap {
-  text-align: center;
-  padding: 1.5rem 0 1.8rem;
-}
-.brand-icon {
-  font-size: 2.2rem;
-  filter: drop-shadow(0 0 12px rgba(0,212,255,0.6));
-  animation: glowPulse 3s ease-in-out infinite;
-}
-.brand-name {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  margin-top: 0.3rem;
-}
-.brand-tag {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-top: 0.15rem;
-}
-
-/* ── Table styling ── */
-.stDataFrame { border-radius: var(--radius-md); overflow: hidden; }
-.stDataFrame thead th {
-  background: var(--bg-elevated) !important;
-  color: var(--cyan) !important;
-  font-family: var(--font-mono) !important;
-  font-size: 0.72rem !important;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-/* ── Plotly charts ── */
-.js-plotly-plot { border-radius: var(--radius-md); }
-
-/* ── Progress bar ── */
-.stProgress > div > div {
-  background: linear-gradient(90deg, var(--cyan), var(--violet)) !important;
-  border-radius: 4px !important;
-  box-shadow: 0 0 10px rgba(0,212,255,0.4);
-}
-
-/* ── File uploader ── */
-.stFileUploader {
-  border: 1px dashed rgba(0,212,255,0.2) !important;
-  border-radius: var(--radius-md) !important;
-  background: var(--bg-surface) !important;
-  transition: border-color 0.2s;
-}
-.stFileUploader:hover { border-color: rgba(0,212,255,0.4) !important; }
-
-/* ── Hide chrome selectively ── */
-#MainMenu  { visibility: hidden; }
-footer     { visibility: hidden; }
-[data-testid="stToolbar"]      { display: none !important; }
-[data-testid="stDecoration"]   { display: none !important; }
-[data-testid="stStatusWidget"] { display: none !important; }
-.stDeployButton                { display: none !important; }
-
-/* ── Force sidebar always open and visible ── */
-section[data-testid="stSidebar"] {
-    display:    flex !important;
-    visibility: visible !important;
-    transform:  translateX(0) !important;
-    min-width:  240px !important;
-    max-width:  280px !important;
-    opacity:    1 !important;
-}
-
-/* ── Hide the collapse button inside sidebar (prevents accidental close) ── */
+/* ─────────────── SIDEBAR ─────────────── */
+section[data-testid="stSidebar"] {{
+  background: {sidebar_bg} !important;
+  border-right: 1px solid var(--sidebar-border) !important;
+}}
+section[data-testid="stSidebar"] .block-container {{
+  padding: 0.75rem !important;
+}}
+section[data-testid="stSidebar"] {{ display:flex !important; visibility:visible !important; transform:translateX(0) !important; min-width:235px !important; max-width:260px !important; opacity:1 !important; }}
 section[data-testid="stSidebar"] button[kind="header"],
 section[data-testid="stSidebar"] > div > div > button,
-[data-testid="stSidebarCollapsedControl"] {
+[data-testid="stSidebarCollapsedControl"] {{ display:none !important; }}
+[data-testid="collapsedControl"] {{
+  display:flex !important; visibility:visible !important; opacity:1 !important;
+  position:fixed !important; left:0.5rem !important; top:50% !important;
+  z-index:999999 !important; background:var(--primary) !important;
+  border:none !important; border-radius:50% !important;
+  width:34px !important; height:34px !important;
+  color:#fff !important; cursor:pointer !important;
+  box-shadow:0 0 16px var(--primary-glow) !important;
+  align-items:center !important; justify-content:center !important;
+}}
+
+/* ─────────────── BRAND MARK ─────────────── */
+.brand-wrap {{ padding: 1.25rem 0.5rem 1.5rem; }}
+.brand-logo {{
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; margin-bottom: 0.75rem;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}}
+.brand-name {{ font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }}
+.brand-tag  {{ font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.15rem; }}
+
+/* ─────────────── USER CARD ─────────────── */
+.user-card {{
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}}
+.user-avatar {{
+  width: 38px; height: 38px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 800;
+  color: white; margin-bottom: 0.6rem;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}}
+.user-name   {{ font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }}
+.user-handle {{ font-family: var(--font-mono);    font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; }}
+
+/* ─────────────── NAV RADIO — UNIFORM FONT ─────────────── */
+div[data-testid="stRadio"] > div {{ gap: 0.15rem; flex-direction: column; }}
+div[data-testid="stRadio"] label {{
+  display: flex !important;
+  align-items: center;
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--r-md) !important;
+  padding: 0.6rem 0.8rem !important;
+  color: var(--text-secondary) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  letter-spacing: 0 !important;
+}}
+div[data-testid="stRadio"] label:hover {{
+  background: var(--primary-dim) !important;
+  color: var(--primary) !important;
+}}
+div[data-testid="stRadio"] [data-checked="true"] label,
+div[data-testid="stRadio"] input:checked + div label {{
+  background: var(--primary-dim) !important;
+  color: var(--primary) !important;
+  font-weight: 600 !important;
+}}
+/* Hide radio circle */
+div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {{ display: none !important; }}
+
+/* ─────────────── NAV SECTION LABEL ─────────────── */
+.nav-section {{
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  padding: 0.4rem 0.8rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.15rem;
+}}
+
+/* ─────────────── CARDS ─────────────── */
+.glass {{
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.4rem;
+  margin-bottom: 0.85rem;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}}
+.glass:hover {{ box-shadow: var(--card-hover); border-color: var(--border-bright); }}
+.glass-cyan   {{ border-top: 2px solid var(--cyan); }}
+.glass-green  {{ border-top: 2px solid var(--green); }}
+.glass-red    {{ border-top: 2px solid var(--red); }}
+.glass-amber  {{ border-top: 2px solid var(--amber); }}
+.glass-violet {{ border-top: 2px solid var(--primary); }}
+
+/* ─────────────── HERO ─────────────── */
+.hero-wrap {{
+  border-radius: var(--r-xl);
+  padding: 2.25rem 2.5rem;
+  margin-bottom: 1.75rem;
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}}
+.hero-wrap::after {{
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent, var(--primary-dim));
+  pointer-events: none;
+}}
+.hero-grid {{
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 60% 80% at 80% 50%, black 20%, transparent 100%);
+  opacity: 0.5;
+}}
+.hero-eyebrow {{
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}}
+.hero-eyebrow::before {{ content: ''; display: inline-block; width: 16px; height: 2px; background: var(--primary); border-radius: 2px; }}
+.hero-title {{
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.5rem;
+}}
+/* Gradient accent text inside hero titles */
+.grad {{
+  background: linear-gradient(90deg, #7C3AED 0%, #06B6D4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}}
+.hero-sub {{ color: var(--text-secondary); font-size: 1rem; margin: 0; line-height: 1.7; font-weight: 450; }}
+.hero-chips {{ display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.1rem; }}
+.chip {{
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0.28rem 0.7rem;
+  font-weight: 500;
+  border-radius: 20px;
+  border: 1px solid var(--border-bright);
+  color: var(--primary);
+  background: var(--primary-dim);
+  letter-spacing: 0.04em;
+}}
+
+/* ─────────────── KPI ICON ─────────────── */
+.kpi-icon {{
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  opacity: 0.85;
+}}
+
+/* ─────────────── FULL WIDTH SIGNIN BUTTON ─────────────── */
+.signin-wrap > div > button {{
+  background: linear-gradient(135deg, #06B6D4, #7C3AED) !important;
+  color: white !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  padding: 0.8rem !important;
+  border-radius: 10px !important;
+  letter-spacing: 0.02em !important;
+  box-shadow: 0 4px 20px rgba(6,182,212,0.25) !important;
+}}
+.signin-wrap > div > button:hover {{
+  box-shadow: 0 6px 28px rgba(6,182,212,0.4) !important;
+  transform: translateY(-1px) !important;
+}}
+
+/* ─────────────── SECTION LABEL ─────────────── */
+.sec-label {{
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.5rem;
+}}
+.sec-label::after {{ content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }}
+
+/* ─────────────── KPI CARDS ─────────────── */
+.kpi-grid {{ display: grid; grid-template-columns: repeat(4,1fr); gap: 0.85rem; margin-bottom: 1.5rem; }}
+.kpi {{
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.4rem 1.25rem 1.2rem;
+  text-align: left;
+  box-shadow: var(--card-shadow);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}}
+.kpi::after {{
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: linear-gradient(90deg, var(--primary), var(--cyan));
+  border-radius: 0 0 var(--r-lg) var(--r-lg); opacity: 0.7;
+}}
+.kpi:hover {{ box-shadow: var(--card-hover); transform: translateY(-2px); }}
+.kpi-icon  {{ font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }}
+.kpi-label {{ font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 700; }}
+.kpi-value {{ font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -0.02em; }}
+.kpi-sub   {{ font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem; font-weight: 500; }}
+
+/* ─────────────── BUTTONS — UNIFORM VIOLET ─────────────── */
+.stButton > button {{
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  color: #FFFFFF !important;
+  background: var(--primary) !important;
+  border: none !important;
+  border-radius: var(--r-md) !important;
+  padding: 0.65rem 1.25rem !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  letter-spacing: 0.02em !important;
+}}
+.stButton > button:hover {{
+  background: #6D28D9 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px var(--primary-glow) !important;
+}}
+.stButton > button:active {{ transform: translateY(0) !important; }}
+.stButton > button:disabled {{
+  background: var(--bg-elevated) !important;
+  color: var(--text-muted) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}}
+
+/* Sign In / Primary button — cyan gradient like reference */
+div[data-testid="stButton"]:has(button[kind="primary"]) > button {{
+  background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #7C3AED 100%) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  padding: 0.8rem !important;
+  border-radius: var(--r-md) !important;
+  letter-spacing: 0.04em !important;
+  box-shadow: 0 4px 20px rgba(6,182,212,0.3) !important;
+}}
+div[data-testid="stButton"]:has(button[kind="primary"]) > button:hover {{
+  background: linear-gradient(135deg, #0891B2 0%, #2563EB 50%, #6D28D9 100%) !important;
+  box-shadow: 0 6px 28px rgba(6,182,212,0.45) !important;
+  transform: translateY(-2px) !important;
+}}
+
+/* Forgot Password — transparent link style */
+div[data-testid="stButton"]:has(button[data-testid="baseButton-secondary"]) > button {{
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.83rem !important;
+  font-weight: 500 !important;
+  padding: 0.6rem 0.75rem !important;
+}}
+div[data-testid="stButton"]:has(button[data-testid="baseButton-secondary"]) > button:hover {{
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+  background: var(--primary-dim) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}}
+
+/* ─────────────── THEME TOGGLE — FLOATING TOP RIGHT ─────────────── */
+.theme-toggle-float {{
+  position: fixed;
+  top: 0.6rem;
+  right: 0.75rem;
+  z-index: 999998;
+  display: flex;
+  justify-content: flex-end;
+}}
+.theme-toggle-float > div {{
+  width: auto !important;
+}}
+.theme-toggle-float button {{
+  background: rgba(124,58,237,0.15) !important;
+  border: 1px solid rgba(124,58,237,0.35) !important;
+  border-radius: 20px !important;
+  padding: 0.3rem 0.8rem !important;
+  font-size: 0.72rem !important;
+  font-family: var(--font-mono) !important;
+  color: #A78BFA !important;
+  cursor: pointer !important;
+  width: auto !important;
+  min-width: unset !important;
+  white-space: nowrap !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+  transform: none !important;
+}}
+.theme-toggle-float button:hover {{
+  background: rgba(124,58,237,0.25) !important;
+  border-color: rgba(124,58,237,0.6) !important;
+  color: #C4B5FD !important;
+  transform: none !important;
+  box-shadow: none !important;
+}}
+
+/* ─────────────── INPUTS ─────────────── */
+.stTextInput > div > div > input,
+.stNumberInput > div > div > input {{
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-md) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.9rem !important;
+  padding: 0.65rem 0.9rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}}
+.stTextInput > div > div > input:focus,
+.stNumberInput > div > div > input:focus {{
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-dim) !important;
+  outline: none !important;
+}}
+.stSelectbox > div > div {{
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-md) !important;
+  color: var(--text-primary) !important;
+}}
+
+/* ─────────────── BADGES ─────────────── */
+.badge {{ display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }}
+.badge-admin    {{ background: rgba(239,68,68,0.12);  color: #F87171; border: 1px solid rgba(239,68,68,0.25); }}
+.badge-research {{ background: rgba(245,158,11,0.12); color: #FCD34D; border: 1px solid rgba(245,158,11,0.25); }}
+.badge-user     {{ background: rgba(16,185,129,0.12); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.25); }}
+.badge-gemini   {{ background: var(--primary-dim);    color: #A78BFA; border: 1px solid rgba(124,58,237,0.3); }}
+.badge-verified {{ background: rgba(16,185,129,0.1);  color: #6EE7B7; border: 1px solid rgba(16,185,129,0.2); font-size: 0.58rem; }}
+
+/* ─────────────── STATUS DOTS ─────────────── */
+.dot {{ display: inline-block; width: 6px; height: 6px; border-radius: 50%; }}
+.dot-green {{ background: var(--green); box-shadow: 0 0 5px var(--green); animation: pulse-dot 2.5s infinite; }}
+.dot-red   {{ background: var(--red);   box-shadow: 0 0 5px var(--red);   animation: pulse-dot 2.5s infinite; }}
+.dot-cyan  {{ background: var(--cyan);  box-shadow: 0 0 5px var(--cyan);  animation: pulse-dot 2.5s infinite; }}
+.dot-amber {{ background: var(--amber); box-shadow: 0 0 5px var(--amber); animation: pulse-dot 2.5s infinite; }}
+@keyframes pulse-dot {{ 0%,100%{{opacity:1;}} 50%{{opacity:0.4;}} }}
+
+/* ─────────────── RESULT BOXES ─────────────── */
+.result-box {{ border-radius: var(--r-xl); padding: 2rem; text-align: center; animation: fadeUp 0.4s ease; }}
+.result-fraud {{ background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25); }}
+.result-legit {{ background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.25); }}
+.result-icon    {{ font-size: 2.75rem; margin-bottom: 0.5rem; animation: bounceIn 0.5s ease; }}
+.result-verdict {{ font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }}
+.verdict-fraud {{ color: var(--red); }}
+.verdict-legit {{ color: var(--green); }}
+
+/* ─────────────── LOG ROW ─────────────── */
+.log-row {{
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.9rem;
+  margin-bottom: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  transition: background 0.15s;
+}}
+.log-row:hover {{ background: var(--bg-overlay); }}
+
+/* ─────────────── OTP BOX ─────────────── */
+.otp-wrap {{
+  background: linear-gradient(135deg, var(--primary-dim), var(--cyan-dim));
+  border: 1px solid var(--border-bright);
+  border-radius: var(--r-xl);
+  padding: 2rem;
+  text-align: center;
+  margin: 1rem 0;
+}}
+.otp-code {{
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.5rem;
+  margin: 0.75rem 0;
+  animation: glowPulse 2.5s ease-in-out infinite;
+}}
+
+/* ─────────────── NAV CARD BUTTONS ─────────────── */
+.nav-card-btn > button {{
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-lg) !important;
+  padding: 0.9rem 1rem !important;
+  text-align: left !important;
+  width: 100% !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  min-height: 65px !important;
+}}
+.nav-card-btn > button:hover {{
+  border-color: var(--primary) !important;
+  background: var(--primary-dim) !important;
+  transform: translateX(3px) !important;
+  color: var(--primary) !important;
+}}
+
+/* ─────────────── TABLES ─────────────── */
+.stDataFrame {{ border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border) !important; }}
+.stDataFrame thead th {{
+  background: var(--bg-elevated) !important;
+  color: var(--text-muted) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.65rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1rem !important;
+}}
+.stDataFrame tbody tr:hover td {{ background: var(--primary-dim) !important; }}
+
+/* ─────────────── PROGRESS ─────────────── */
+.stProgress > div > div {{
+  background: linear-gradient(90deg, var(--primary), var(--cyan)) !important;
+  border-radius: 4px !important;
+}}
+
+/* ─────────────── FILE UPLOADER ─────────────── */
+.stFileUploader {{
+  border: 1.5px dashed var(--border) !important;
+  border-radius: var(--r-lg) !important;
+  background: var(--bg-surface) !important;
+  transition: border-color 0.2s !important;
+}}
+.stFileUploader:hover {{ border-color: var(--primary) !important; }}
+
+/* ─────────────── ANIMATIONS ─────────────── */
+@keyframes fadeUp   {{ from{{opacity:0;transform:translateY(12px);}} to{{opacity:1;transform:translateY(0);}} }}
+@keyframes bounceIn {{ 0%{{transform:scale(0.5);opacity:0;}} 70%{{transform:scale(1.08);}} 100%{{transform:scale(1);opacity:1;}} }}
+@keyframes glowPulse{{ 0%,100%{{opacity:1;}} 50%{{opacity:0.55;}} }}
+@keyframes shimmer  {{ 0%{{background-position:-200% center;}} 100%{{background-position:200% center;}} }}
+.main > div {{ animation: fadeUp 0.3s ease; }}
+
+/* ─────────────── HIDE CHROME ─────────────── */
+#MainMenu {{ visibility: hidden; }}
+footer    {{ visibility: hidden; }}
+[data-testid="stToolbar"]      {{ display: none !important; }}
+[data-testid="stDecoration"]   {{ display: none !important; }}
+[data-testid="stStatusWidget"] {{ display: none !important; }}
+.stDeployButton                {{ display: none !important; }}
+
+/* ─────────────── FIX BLANK BOXES AND </div> LEAK ─────────────── */
+div[data-testid="stVerticalBlock"] > div:empty,
+div[data-testid="stVerticalBlockBorderWrapper"]:empty,
+.element-container:empty {{ display: none !important; }}
+.stSpinner > div {{ background: transparent !important; border: none !important; box-shadow: none !important; }}
+
+/* Hide orphaned closing </div> tags that Streamlit renders as text */
+.stMarkdown p:empty {{ display: none !important; }}
+section[data-testid="stSidebar"] .stMarkdown {{
+    min-height: 0 !important;
+}}
+/* Target the specific </div> text node that leaks in sidebar */
+section[data-testid="stSidebar"] .element-container:has(.stMarkdown p:only-child:empty) {{
     display: none !important;
-}
+}}
 
-/* ── Make the expand arrow very visible if sidebar somehow collapses ── */
-[data-testid="collapsedControl"] {
-    display:          flex !important;
-    visibility:       visible !important;
-    opacity:          1 !important;
-    position:         fixed !important;
-    left:             0.5rem !important;
-    top:              50% !important;
-    z-index:          999999 !important;
-    background:       #00d4ff !important;
-    border:           none !important;
-    border-radius:    50% !important;
-    width:            36px !important;
-    height:           36px !important;
-    color:            #04060f !important;
-    font-weight:      900 !important;
-    font-size:        1.1rem !important;
-    cursor:           pointer !important;
-    box-shadow:       0 0 20px rgba(0,212,255,0.6) !important;
-    align-items:      center !important;
-    justify-content:  center !important;
-}
-[data-testid="collapsedControl"] svg {
-    fill: #04060f !important;
-    stroke: #04060f !important;
-}
-[data-testid="collapsedControl"]:hover {
-    background:   #00b8d9 !important;
-    box-shadow:   0 0 30px rgba(0,212,255,0.9) !important;
-    transform:    scale(1.1) !important;
-}
+/* ─────────────── HIDE </div> LEAK ─────────────── */
+/* Target orphaned closing tag text rendered as paragraphs */
+section[data-testid="stSidebar"] .stMarkdown p:empty {{ display: none !important; }}
+section[data-testid="stSidebar"] .element-container:has(.stMarkdown:empty) {{ display: none !important; }}
+/* Hide any stMarkdown that only contains whitespace or a lone tag */
+section[data-testid="stSidebar"] .stMarkdown {{ min-height: 0; }}
 
-/* ── Page fade-in ── */
-.main > div { animation: fadeSlideUp 0.35s ease; }
+/* ─────────────── GLOBAL FONT SIZE INCREASE ─────────────── */
+p, span, div, li {{ font-size: 15px; }}
+label {{ font-size: 14px !important; }}
+.stTextInput label, .stNumberInput label,
+.stSelectbox label, .stTextArea label,
+.stSlider label {{ font-size: 15px !important; font-weight: 500 !important; color: var(--text-secondary) !important; }}
+.stTextInput input, .stNumberInput input {{ font-size: 15px !important; }}
+.stSelectbox > div {{ font-size: 15px !important; }}
+div[data-testid="stRadio"] label {{ font-size: 0.95rem !important; }}
+.stDataFrame td, .stDataFrame th {{ font-size: 14px !important; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -699,7 +691,17 @@ def init_db():
     c.execute("""CREATE TABLE IF NOT EXISTS users (
         username TEXT PRIMARY KEY,
         password TEXT, role TEXT, name TEXT,
-        email TEXT, status TEXT, created TEXT)""")
+        email TEXT, status TEXT, created TEXT,
+        totp_secret TEXT DEFAULT NULL,
+        totp_enabled INTEGER DEFAULT 0)""")
+    c.execute("""CREATE TABLE IF NOT EXISTS locked_accounts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        locked_at TEXT,
+        attempts INTEGER,
+        notified_admin INTEGER DEFAULT 0,
+        unlocked_at TEXT,
+        is_active INTEGER DEFAULT 1)""")
     conn.commit(); conn.close()
     # Seed default users into DB if not present
     _seed_default_users()
@@ -707,14 +709,16 @@ def init_db():
 def _seed_default_users():
     """Insert default users into DB if they don't exist yet."""
     defaults = [
-        ("admin",      "admin123",    "admin",      "System Admin", "mdrprashan10@gmail.com", "active", "2024-01-01"),
-        ("researcher", "research123", "researcher", "Dr. Research", "mdrprashan10@gmail.com", "active", "2024-01-01"),
-        ("user1",      "user123",     "user",       "John Analyst", "mdrprashan10@gmail.com", "active", "2024-01-01"),
+        ("admin",      "admin123",    "admin",      "System Admin", "mdrprashan10@gmail.com", "active", "2024-01-01", None, 0),
+        ("researcher", "research123", "researcher", "Dr. Research", "mdrprashan10@gmail.com", "active", "2024-01-01", None, 0),
+        ("user1",      "user123",     "user",       "John Analyst", "mdrprashan10@gmail.com", "active", "2024-01-01", None, 0),
     ]
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     for row in defaults:
-        c.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?,?)", row)
+        c.execute("""INSERT OR IGNORE INTO users
+                     (username,password,role,name,email,status,created,totp_secret,totp_enabled)
+                     VALUES(?,?,?,?,?,?,?,?,?)""", row)
     conn.commit(); conn.close()
 
 def db_get_all_users() -> dict:
@@ -758,6 +762,97 @@ def db_update_user_status(username, status):
 def db_update_user_password(username, new_password):
     conn = sqlite3.connect(DB_PATH)
     conn.execute("UPDATE users SET password=? WHERE username=?", (new_password, username))
+    conn.commit(); conn.close()
+
+def db_migrate_totp():
+    """Add TOTP columns to existing databases that don't have them."""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    try:
+        c.execute("ALTER TABLE users ADD COLUMN totp_secret TEXT DEFAULT NULL")
+    except: pass
+    try:
+        c.execute("ALTER TABLE users ADD COLUMN totp_enabled INTEGER DEFAULT 0")
+    except: pass
+    conn.commit(); conn.close()
+
+def db_save_totp_secret(username, secret):
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("UPDATE users SET totp_secret=?, totp_enabled=1 WHERE username=?",
+                 (secret, username))
+    conn.commit(); conn.close()
+
+def db_get_totp_secret(username):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT totp_secret, totp_enabled FROM users WHERE username=?", (username,))
+    row = c.fetchone(); conn.close()
+    if row: return row[0], bool(row[1])
+    return None, False
+
+# ── TOTP / GOOGLE AUTHENTICATOR ───────────────────────────────────────────────
+import pyotp, qrcode, io, base64
+
+def generate_totp_secret():
+    return pyotp.random_base32()
+
+def get_totp_uri(username, secret):
+    return pyotp.totp.TOTP(secret).provisioning_uri(
+        name=username,
+        issuer_name="FraudShield"
+    )
+
+def generate_qr_base64(uri):
+    """Generate QR code image as base64 string."""
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=8,
+        border=2,
+    )
+    qr.add_data(uri)
+    qr.make(fit=True)
+    img  = qr.make_image(fill_color="#7C3AED", back_color="#0F1423")
+    buf  = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode()
+
+def verify_totp(secret, code):
+    """Verify a 6-digit TOTP code against the secret."""
+    try:
+        totp = pyotp.TOTP(secret)
+        return totp.verify(str(code).strip(), valid_window=1)
+    except:
+        return False
+
+def db_lock_account(username, attempts=3):
+    """Record an account lockout event."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""INSERT INTO locked_accounts(username,locked_at,attempts,notified_admin,is_active)
+                    VALUES(?,?,?,0,1)""",
+                 (username, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), attempts))
+    conn.commit(); conn.close()
+
+def db_unlock_account(username):
+    """Mark all active lockouts for a user as resolved."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""UPDATE locked_accounts SET is_active=0, unlocked_at=?
+                    WHERE username=? AND is_active=1""",
+                 (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), username))
+    conn.commit(); conn.close()
+
+def db_get_active_lockouts():
+    """Get all currently active lockout events."""
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql_query(
+        "SELECT * FROM locked_accounts WHERE is_active=1 ORDER BY locked_at DESC",
+        conn)
+    conn.close()
+    return df
+
+def db_mark_lockout_notified(lockout_id):
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("UPDATE locked_accounts SET notified_admin=1 WHERE id=?", (lockout_id,))
     conn.commit(); conn.close()
 
 def db_save_session(token, username, role, name, email):
@@ -819,6 +914,7 @@ def db_get_logs(limit=50):
     conn.close(); return df
 
 init_db()
+db_migrate_totp()
 
 # ── EMAIL CONFIGURATION ───────────────────────────────────────────────────────
 # Replace with your Gmail address and App Password
@@ -944,6 +1040,47 @@ def notify_user_rejected(name: str, username: str, to_email: str) -> bool:
                       "❌ FraudShield Account Request Update",
                       email_base(content, "Account Request Declined"))
 
+def notify_password_reset_otp(name: str, otp: str, to_email: str) -> bool:
+    """Send password reset OTP via email."""
+    content = f"""
+    <p style="color:#8892a4;line-height:1.7;margin:0 0 1rem;">
+        Hi <strong style="color:#eef2ff;">{name}</strong>,
+    </p>
+    <p style="color:#8892a4;line-height:1.7;margin:0 0 1.5rem;">
+        A password reset was requested for your FraudShield account.
+        Use the code below to reset your password.
+        This code expires in <strong style="color:#eef2ff;">10 minutes</strong>.
+    </p>
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(6,182,212,0.08));
+                border:1px solid rgba(124,58,237,0.25);border-radius:14px;
+                padding:2.5rem;text-align:center;margin-bottom:1.5rem;">
+        <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;
+                    letter-spacing:0.2em;font-family:monospace;margin-bottom:0.75rem;">
+            Password Reset Code
+        </div>
+        <div style="font-family:monospace;font-size:3rem;font-weight:700;
+                    color:#7C3AED;letter-spacing:0.8rem;">
+            {otp}
+        </div>
+        <div style="color:#475569;font-size:0.75rem;margin-top:0.75rem;">
+            Valid for 10 minutes. Do not share this code.
+        </div>
+    </div>
+    <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);
+                border-radius:8px;padding:1rem;">
+        <p style="color:#F59E0B;font-size:0.82rem;margin:0;">
+            If you did not request a password reset, ignore this email.
+            Your password will not change unless you complete the reset process.
+        </p>
+    </div>
+    """
+    return send_email(
+        to_email,
+        "FraudShield — Password Reset Code",
+        email_base(content, "Password Reset")
+    )
+
+
 def notify_admin_new_request(name: str, username: str, role: str,
                               reason: str, admin_email: str) -> bool:
     """Notify admin that a new account request has been submitted."""
@@ -976,14 +1113,56 @@ def notify_admin_new_request(name: str, username: str, role: str,
 
     <p style="color:#8892a4;line-height:1.7;margin:0;">
         Please log in to FraudShield and go to
-        <strong style="color:#00d4ff;">User Management → Pending Requests</strong>
+        <strong style="color:#00d4ff;">User Management</strong>
         to approve or reject this request.
     </p>
     """
     return send_email(admin_email,
-                      f"🔔 New Account Request — {name} (@{username})",
+                      f"New Account Request — {name} (@{username})",
                       email_base(content, "New Account Request Pending Review"))
 
+def notify_2fa_otp(name: str, otp: str, to_email: str) -> bool:
+    """Send 2FA OTP via email."""
+    content = f"""
+    <p style="color:#8892a4;line-height:1.7;margin:0 0 1rem;">
+        Hi <strong style="color:#eef2ff;">{name}</strong>,
+    </p>
+    <p style="color:#8892a4;line-height:1.7;margin:0 0 1.5rem;">
+        A login attempt was made on your FraudShield account.
+        Use the code below to complete your Two-Factor Authentication.
+        This code expires in <strong style="color:#eef2ff;">5 minutes</strong>.
+    </p>
+    <div style="background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(124,58,237,0.08));
+                border:1px solid rgba(0,212,255,0.25);border-radius:14px;
+                padding:2.5rem;text-align:center;margin-bottom:1.5rem;">
+        <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;
+                    letter-spacing:0.2em;font-family:monospace;margin-bottom:0.75rem;">
+            Your verification code
+        </div>
+        <div style="font-family:monospace;font-size:3rem;font-weight:700;
+                    color:#00d4ff;letter-spacing:0.8rem;">
+            {otp}
+        </div>
+        <div style="color:#475569;font-size:0.75rem;margin-top:0.75rem;">
+            Valid for 5 minutes. Do not share this code with anyone.
+        </div>
+    </div>
+    <div style="background:rgba(255,171,0,0.08);border:1px solid rgba(255,171,0,0.2);
+                border-radius:8px;padding:1rem;margin-bottom:1rem;">
+        <p style="color:#ffab00;font-size:0.82rem;margin:0;">
+            If you did not attempt to log in, your account may be at risk.
+            Change your password immediately and contact your administrator.
+        </p>
+    </div>
+    <p style="color:#4a5568;font-size:0.8rem;margin:0;">
+        FraudShield will never ask for your OTP over phone, chat, or email.
+    </p>
+    """
+    return send_email(
+        to_email,
+        "FraudShield — Your Login Verification Code",
+        email_base(content, "Two-Factor Authentication")
+    )
 # ── USERS ─────────────────────────────────────────────────────────────────────
 DEFAULT_USERS = {
     "admin":      {"password":"admin123",    "role":"admin",      "name":"System Admin",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
@@ -994,11 +1173,14 @@ DEFAULT_USERS = {
 for k,v in {"logged_in":False,"username":"","role":"","user_name":"","user_email":"",
             "otp_pending":False,"otp_code":"","otp_username":"",
             "otp_email_sent":False,"otp_email_addr":"",
+            "totp_setup_pending":False,"totp_setup_secret":"","totp_setup_username":"",
+            "totp_verify_pending":False,"totp_verify_username":"",
             "users":None,
             "pending_users":[],"show_register":False,"show_reset_pw":False,
-            "reset_otp":"","reset_username":"","reset_step":1,
+            "reset_otp":"","reset_username":"","reset_step":1,"reset_email_sent":False,
             "session_token":"","failed_logins":{},"announcements":[],
-            "nav_page":None,"current_page":"🏠  Dashboard"}.items():
+            "nav_page":None,"current_page":"🏠  Dashboard",
+            "theme":"dark"}.items():
     if k not in st.session_state: st.session_state[k]=v
 
 # Always load users from database (not just session state)
@@ -1007,6 +1189,7 @@ st.session_state.users = db_get_all_users()
 def get_users():
     """Always return fresh users from database."""
     return db_get_all_users()
+
 if not st.session_state.logged_in:
     try:
         params = st.query_params
@@ -1023,38 +1206,47 @@ if not st.session_state.logged_in:
     except Exception:
         pass
 
-def get_users(): return st.session_state.users
 def add_log(action): db_save_log(st.session_state.username or "system", action)
 
 # ── CHART THEME ───────────────────────────────────────────────────────────────
 CHART_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-    font={"color":"#8892a4","family":"Plus Jakarta Sans"},
-    legend={"bgcolor":"rgba(0,0,0,0)","font":{"color":"#8892a4"}},
-    xaxis={"gridcolor":"rgba(255,255,255,0.05)","zerolinecolor":"rgba(255,255,255,0.05)"},
-    yaxis={"gridcolor":"rgba(255,255,255,0.05)","zerolinecolor":"rgba(255,255,255,0.05)"},
-    margin=dict(t=16,b=16,l=8,r=8)
+    font={"color":"#94A3B8","family":"Inter"},
+    legend={"bgcolor":"rgba(0,0,0,0)","font":{"color":"#94A3B8","size":12}},
+    xaxis={"gridcolor":"rgba(255,255,255,0.05)","zerolinecolor":"rgba(255,255,255,0.04)",
+           "tickfont":{"color":"#64748B","size":11}},
+    yaxis={"gridcolor":"rgba(255,255,255,0.05)","zerolinecolor":"rgba(255,255,255,0.04)",
+           "tickfont":{"color":"#64748B","size":11}},
+    margin=dict(t=20,b=20,l=10,r=10)
 )
+
+# Primary/accent colours matching theme
+C_VIOLET = "#7C3AED"
+C_CYAN   = "#06B6D4"
+C_GREEN  = "#10B981"
+C_RED    = "#EF4444"
+C_AMBER  = "#F59E0B"
 
 def gauge_chart(value, title):
     fig = go.Figure(go.Indicator(
         mode="gauge+number", value=round(value*100,1),
-        title={"text":title,"font":{"color":"#8892a4","size":12,"family":"JetBrains Mono"}},
-        number={"suffix":"%","font":{"color":"#eef2ff","size":24,"family":"Outfit"}},
+        title={"text":title,"font":{"color":"#94A3B8","size":12,"family":"JetBrains Mono"}},
+        number={"suffix":"%","font":{"color":"#F8FAFC","size":26,"family":"Manrope"}},
         gauge={
-            "axis":{"range":[0,100],"tickcolor":"#1a2035","tickfont":{"color":"#4a5568","size":9}},
-            "bar":{"color":"#00d4ff","thickness":0.65},
-            "bgcolor":"rgba(0,212,255,0.04)",
+            "axis":{"range":[0,100],"tickcolor":"#1E2540",
+                    "tickfont":{"color":"#475569","size":9}},
+            "bar":{"color":C_VIOLET,"thickness":0.65},
+            "bgcolor":"rgba(124,58,237,0.05)",
             "bordercolor":"rgba(0,0,0,0)",
             "steps":[
-                {"range":[0,33],  "color":"rgba(0,230,118,0.06)"},
-                {"range":[33,66], "color":"rgba(255,171,0,0.06)"},
-                {"range":[66,100],"color":"rgba(255,23,68,0.08)"},
+                {"range":[0,33],  "color":"rgba(16,185,129,0.06)"},
+                {"range":[33,66], "color":"rgba(245,158,11,0.06)"},
+                {"range":[66,100],"color":"rgba(239,68,68,0.08)"},
             ],
-            "threshold":{"line":{"color":"#ff1744","width":2},"thickness":0.8,"value":50}
+            "threshold":{"line":{"color":C_RED,"width":2},"thickness":0.8,"value":50}
         }
     ))
-    fig.update_layout(**CHART_LAYOUT, height=210)
+    fig.update_layout(**CHART_LAYOUT, height=220)
     return fig
 
 # ── API + HELPERS ─────────────────────────────────────────────────────────────
@@ -1127,6 +1319,211 @@ def score_row(row):
             "recommended_action":"Block transaction" if pred==1 else "Allow transaction"}
 
 # ── 2FA PAGE ──────────────────────────────────────────────────────────────────
+def _complete_login(username):
+    """Finalise login after successful MFA — create session and redirect."""
+    import uuid
+    users = get_users()
+    user  = users[username]
+    token = str(uuid.uuid4()).replace("-","")
+    db_save_session(token, username, user["role"], user["name"], user.get("email",""))
+    st.query_params["sid"] = token
+    st.session_state.logged_in      = True
+    st.session_state.username       = username
+    st.session_state.role           = user["role"]
+    st.session_state.user_name      = user["name"]
+    st.session_state.user_email     = user.get("email","")
+    st.session_state.session_token  = token
+    st.session_state.current_page   = "🏠  Dashboard"
+    st.session_state.totp_setup_pending  = False
+    st.session_state.totp_verify_pending = False
+    add_log("MFA verified — login complete")
+    st.rerun()
+
+
+def page_totp_setup():
+    """First-time Google Authenticator setup page."""
+    _, col, _ = st.columns([1, 1.8, 1])
+    with col:
+        username = st.session_state.totp_setup_username
+        secret   = st.session_state.totp_setup_secret
+        uri      = get_totp_uri(username, secret)
+        qr_b64   = generate_qr_base64(uri)
+
+        st.markdown("""
+        <div style='animation:fadeUp 0.4s ease;margin-top:1.5rem;'>
+        <div style='background:linear-gradient(135deg,#0F1423,#161C30);
+                    border:1px solid rgba(124,58,237,0.25);border-radius:20px;
+                    padding:2.5rem 2rem;text-align:center;'>
+            <div style='font-size:2.5rem;margin-bottom:0.75rem;
+                        filter:drop-shadow(0 0 16px rgba(124,58,237,0.5));'>🔐</div>
+            <div style='font-family:"Manrope",sans-serif;font-size:1.5rem;font-weight:800;
+                        color:#F8FAFC;letter-spacing:-0.02em;margin-bottom:0.4rem;'>
+                Set Up Google Authenticator
+            </div>
+            <div style='color:#94A3B8;font-size:0.92rem;line-height:1.6;margin-bottom:1.75rem;'>
+                Scan the QR code below with the Google Authenticator app.<br>
+                This only needs to be done once.
+            </div>
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Steps
+        st.markdown("""
+        <div style='display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin:1rem 0;'>
+            <div style='background:#0F1423;border:1px solid rgba(124,58,237,0.2);border-radius:12px;
+                        padding:1rem;text-align:center;'>
+                <div style='font-size:1.5rem;margin-bottom:0.4rem;'>📱</div>
+                <div style='font-size:0.85rem;font-weight:600;color:#F8FAFC;margin-bottom:0.2rem;'>Step 1</div>
+                <div style='font-size:0.75rem;color:#94A3B8;'>Install Google Authenticator from App Store or Google Play</div>
+            </div>
+            <div style='background:#0F1423;border:1px solid rgba(124,58,237,0.2);border-radius:12px;
+                        padding:1rem;text-align:center;'>
+                <div style='font-size:1.5rem;margin-bottom:0.4rem;'>📷</div>
+                <div style='font-size:0.85rem;font-weight:600;color:#F8FAFC;margin-bottom:0.2rem;'>Step 2</div>
+                <div style='font-size:0.75rem;color:#94A3B8;'>Tap + in the app and scan the QR code below</div>
+            </div>
+            <div style='background:#0F1423;border:1px solid rgba(124,58,237,0.2);border-radius:12px;
+                        padding:1rem;text-align:center;'>
+                <div style='font-size:1.5rem;margin-bottom:0.4rem;'>✅</div>
+                <div style='font-size:0.85rem;font-weight:600;color:#F8FAFC;margin-bottom:0.2rem;'>Step 3</div>
+                <div style='font-size:0.75rem;color:#94A3B8;'>Enter the 6-digit code shown in the app below</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # QR Code
+        st.markdown(f"""
+        <div style='background:#0F1423;border:1px solid rgba(124,58,237,0.3);border-radius:16px;
+                    padding:1.75rem;text-align:center;margin:0.75rem 0;'>
+            <div style='font-family:"JetBrains Mono",monospace;font-size:0.65rem;color:#7C3AED;
+                        text-transform:uppercase;letter-spacing:0.15em;margin-bottom:1rem;font-weight:600;'>
+                Scan with Google Authenticator
+            </div>
+            <img src='data:image/png;base64,{qr_b64}'
+                 style='width:200px;height:200px;border-radius:12px;
+                        border:3px solid rgba(124,58,237,0.4);'/>
+            <div style='margin-top:1rem;'>
+                <div style='font-family:"JetBrains Mono",monospace;font-size:0.65rem;
+                            color:#64748B;margin-bottom:0.35rem;'>Or enter this key manually</div>
+                <code style='background:#161C30;border:1px solid rgba(124,58,237,0.2);
+                             border-radius:8px;padding:0.4rem 0.8rem;font-size:0.82rem;
+                             color:#A78BFA;letter-spacing:0.15em;'>{secret}</code>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Verify code
+        st.markdown("<div style='background:#0F1423;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.5rem;'>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-label'>Verify Setup</div>", unsafe_allow_html=True)
+        code = st.text_input("Enter the 6-digit code from Google Authenticator",
+                             placeholder="Enter your MFA code here", max_chars=6, key="totp_setup_code")
+
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button("✅  Confirm & Sign In", key="totp_setup_confirm", type="primary"):
+                if code and len(code) == 6 and verify_totp(secret, code):
+                    db_save_totp_secret(username, secret)
+                    st.success("Google Authenticator set up successfully!")
+                    _complete_login(username)
+                else:
+                    st.error("Incorrect code. Make sure you scanned the QR code and try again.")
+        with c2:
+            if st.button("← Cancel", key="totp_setup_cancel"):
+                st.session_state.totp_setup_pending = False
+                st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style='background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);
+                    border-radius:10px;padding:0.9rem 1rem;margin-top:0.75rem;
+                    display:flex;align-items:center;gap:0.75rem;'>
+            <span style='font-size:1.1rem;'>⚠️</span>
+            <div style='color:#FCD34D;font-size:0.82rem;line-height:1.5;'>
+                <strong>Keep your authenticator app safe.</strong> If you lose access to it,
+                contact an administrator to reset your MFA. The QR code will only be shown once.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+def page_totp_verify():
+    """Google Authenticator code verification on subsequent logins."""
+    _, col, _ = st.columns([1, 1.6, 1])
+    with col:
+        username = st.session_state.totp_verify_username
+
+        st.markdown(f"""
+        <div style='animation:fadeUp 0.4s ease;margin-top:2rem;'>
+        <div style='background:linear-gradient(135deg,#0F1423,#161C30);
+                    border:1px solid rgba(124,58,237,0.25);border-radius:20px;
+                    padding:2.5rem 2rem;text-align:center;margin-bottom:1rem;'>
+            <div style='font-size:2.5rem;margin-bottom:0.75rem;
+                        filter:drop-shadow(0 0 16px rgba(124,58,237,0.5));'>🔐</div>
+            <div style='font-family:"Manrope",sans-serif;font-size:1.5rem;font-weight:800;
+                        color:#F8FAFC;letter-spacing:-0.02em;margin-bottom:0.4rem;'>
+                Two-Factor Authentication
+            </div>
+            <div style='color:#94A3B8;font-size:0.92rem;'>
+                Open Google Authenticator and enter the code for
+                <strong style='color:#A78BFA;'>FraudShield</strong>
+            </div>
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style='background:#0F1423;border:1px solid rgba(255,255,255,0.08);
+                    border-radius:14px;padding:1.75rem;'>
+            <div style='display:flex;align-items:center;gap:1rem;padding:1rem;
+                        background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);
+                        border-radius:10px;margin-bottom:1.25rem;'>
+                <span style='font-size:2rem;'>📱</span>
+                <div>
+                    <div style='font-size:0.9rem;font-weight:600;color:#F8FAFC;'>
+                        Open Google Authenticator
+                    </div>
+                    <div style='font-size:0.78rem;color:#94A3B8;margin-top:0.2rem;'>
+                        Find FraudShield in your app — codes rotate every 30 seconds
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        code = st.text_input("6-digit code",
+                             placeholder="Enter your 6-digit MFA code",
+                             max_chars=6, key="totp_verify_code",
+                             label_visibility="collapsed")
+
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button("Sign In →", key="totp_verify_btn", type="primary"):
+                secret, _ = db_get_totp_secret(username)
+                if code and verify_totp(secret, code):
+                    _complete_login(username)
+                else:
+                    st.error("Incorrect code. Check your Google Authenticator app and try again.")
+                    add_log(f"TOTP verification failed for {username}")
+        with c2:
+            if st.button("← Back", key="totp_verify_back"):
+                st.session_state.totp_verify_pending = False
+                st.rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style='background:var(--bg-elevated);border:1px solid var(--border);
+                    border-radius:10px;padding:0.85rem 1rem;margin-top:0.75rem;
+                    display:flex;align-items:center;gap:0.75rem;'>
+            <span>🛡️</span>
+            <div style='color:#94A3B8;font-size:0.8rem;'>
+                <strong style='color:#F8FAFC;'>Security reminder:</strong>
+                FraudShield will never ask for your authenticator code via email, phone, or chat.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
 def page_2fa():
     _,col,_ = st.columns([1,2,1])
     with col:
@@ -1258,277 +1655,300 @@ def page_2fa():
 
 # ── LOGIN PAGE ────────────────────────────────────────────────────────────────
 def page_login():
-    _,col,_ = st.columns([1,2,1])
+
+    # ── Top header banner ─────────────────────────────────────────────────────
+    st.markdown("""
+    <div style='background:linear-gradient(135deg,#0B0E1F 0%,#111827 60%,#1a1040 100%);
+                border:1px solid rgba(124,58,237,0.2);border-radius:16px;
+                padding:2.5rem 2.75rem;margin-bottom:1.5rem;position:relative;overflow:hidden;'>
+      <div style='position:absolute;inset:0;
+                  background:radial-gradient(ellipse 55% 90% at 85% 50%,
+                  rgba(124,58,237,0.1) 0%,transparent 70%);pointer-events:none;'></div>
+      <div style='position:absolute;top:0;right:0;width:40%;height:100%;
+                  background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);
+                  background-size:24px 24px;
+                  mask-image:radial-gradient(ellipse 80% 100% at 100% 50%,black,transparent);
+                  pointer-events:none;'></div>
+
+      <div style='display:inline-flex;align-items:center;gap:0.5rem;
+                  background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);
+                  border-radius:20px;padding:0.25rem 0.85rem;margin-bottom:1.1rem;'>
+        <span style='font-size:0.7rem;'>🛡️</span>
+        <span style='font-family:"JetBrains Mono",monospace;font-size:0.65rem;
+                     color:#A78BFA;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;'>
+          Enterprise Fraud Intelligence
+        </span>
+      </div>
+
+      <div style='font-family:"Manrope",sans-serif;font-size:2.5rem;font-weight:900;
+                  color:#F8FAFC;letter-spacing:-0.03em;line-height:1.1;margin-bottom:0.85rem;'>
+        AI-Powered
+        <span style='background:linear-gradient(90deg,#06B6D4,#818CF8);
+                     -webkit-background-clip:text;-webkit-text-fill-color:transparent;'>
+          Fraud Intelligence
+        </span>
+        Platform
+      </div>
+
+      <p style='color:#94A3B8;font-size:0.95rem;line-height:1.7;margin:0 0 1.35rem;max-width:580px;'>
+        Detect fraud in real-time, train ML ensemble models, generate synthetic fraud data,
+        compare ensemble methods, and get explainable AI insights.
+      </p>
+
+      <div style='display:flex;flex-wrap:wrap;gap:0.5rem;'>
+        <span style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+                     border-radius:20px;padding:0.3rem 0.9rem;font-size:0.77rem;color:#CBD5E1;'>
+          🔐 Role-Based Access
+        </span>
+        <span style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+                     border-radius:20px;padding:0.3rem 0.9rem;font-size:0.77rem;color:#CBD5E1;'>
+          🤖 35+ ML Models
+        </span>
+        <span style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+                     border-radius:20px;padding:0.3rem 0.9rem;font-size:0.77rem;color:#CBD5E1;'>
+          ⚡ Synthetic Data Generator
+        </span>
+        <span style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+                     border-radius:20px;padding:0.3rem 0.9rem;font-size:0.77rem;color:#CBD5E1;'>
+          📊 Ensemble Comparison
+        </span>
+        <span style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+                     border-radius:20px;padding:0.3rem 0.9rem;font-size:0.77rem;color:#CBD5E1;'>
+          📋 Reports & Export
+        </span>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Centered login card ───────────────────────────────────────────────────
+    _, col, _ = st.columns([1, 1.4, 1])
     with col:
+
         st.markdown("""
-        <div style='animation:fadeSlideUp 0.4s ease; margin-top:2.5rem;'>
-        <div class='hero-wrap' style='text-align:center; padding:3rem 2rem;'>
-            <div class='hero-grid'></div>
-            <div class='brand-icon'>🛡️</div>
-            <div class='hero-eyebrow' style='justify-content:center; margin-top:0.5rem;'>
-                Fraud Intelligence Platform
+        <div style='background:#0F1423;border:1px solid rgba(255,255,255,0.09);
+                    border-radius:18px;padding:2.25rem 2rem;
+                    box-shadow:0 24px 64px rgba(0,0,0,0.4);'>
+
+          <!-- Logo row -->
+          <div style='text-align:center;margin-bottom:1.5rem;'>
+            <div style='font-size:1.8rem;margin-bottom:0.4rem;
+                        filter:drop-shadow(0 0 12px rgba(124,58,237,0.5));'>🛡️</div>
+            <div style='font-family:"Manrope",sans-serif;font-size:1.3rem;font-weight:800;
+                        color:#F8FAFC;letter-spacing:-0.02em;'>FraudShield</div>
+            <div style='display:inline-block;margin-top:0.4rem;background:rgba(124,58,237,0.15);
+                        border:1px solid rgba(124,58,237,0.3);border-radius:20px;
+                        padding:0.2rem 0.75rem;'>
+              <span style='font-family:"JetBrains Mono",monospace;font-size:0.62rem;
+                           color:#A78BFA;letter-spacing:0.1em;'>🔒 LOCAL AUTH + TOTP MFA</span>
             </div>
-            <div class='hero-title' style='font-size:2.8rem;'>FraudShield</div>
-            <div class='hero-sub'>Machine Learning × Gemini AI × Real-time Detection</div>
-            <div class='hero-chips' style='justify-content:center;'>
-                <span class='chip'>Bagging Ensemble</span>
-                <span class='chip'>ROC-AUC 0.9926</span>
-                <span class='chip'>Gemini AI</span>
-                <span class='chip'>2FA Security</span>
-            </div>
-        </div>
+          </div>
+
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("<div class='glass glass-cyan' style='animation:fadeSlideUp 0.5s ease;'>", unsafe_allow_html=True)
-        st.markdown("<div class='sec-label'>Sign In to Platform</div>", unsafe_allow_html=True)
-        username = st.text_input("Username", placeholder="Enter your username")
-        password = st.text_input("Password", type="password", placeholder="Enter your password")
-        if st.button("Sign In →"):
-            users = get_users()
-            failed = st.session_state.failed_logins
-            # Check lockout
-            if failed.get(username, 0) >= 3:
-                st.error("⛔ Account temporarily locked after 3 failed attempts. Please use Forgot Password or contact admin.")
-                add_log(f"Login blocked — account locked: {username}")
-            elif username in users:
-                user = users[username]
-                if user["password"] == password:
-                    if user.get("status","active") == "inactive":
-                        st.error("Account deactivated. Contact administrator.")
-                        add_log(f"Login blocked — inactive account: {username}")
-                    else:
-                        # Clear failed logins on success
-                        st.session_state.failed_logins.pop(username, None)
-                        otp        = str(random.randint(100000,999999))
-                        user_email = users[username].get("email","")
-                        user_name  = users[username].get("name", username)
+        # ── Tabs: Sign In / Create Account ───────────────────────────────────
+        tab_login, tab_register = st.tabs(["🔑  Sign In", "✨  Create Account"])
 
-                        # Send OTP via email
-                        email_sent = False
-                        if user_email:
-                            email_sent = notify_2fa_otp(user_name, otp, user_email)
+        with tab_login:
+            # Lockout check
+            username = st.text_input("Username or Email", placeholder="Enter your username",
+                                     key="login_user_v2")
+            password = st.text_input("Password", type="password",
+                                     placeholder="Enter your password",
+                                     key="login_pass_v2")
 
-                        st.session_state.otp_pending   = True
-                        st.session_state.otp_code      = otp
-                        st.session_state.otp_username  = username
-                        st.session_state.otp_email_sent = email_sent
-                        st.session_state.otp_email_addr = user_email
-                        add_log(f"Login — 2FA OTP {'emailed to ' + user_email if email_sent else 'generated (no email)'}")
-                        st.rerun()
+            is_locked = st.session_state.failed_logins.get(username, 0) >= 3 if username else False
+
+            if is_locked:
+                st.markdown("""
+                <div style='background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+                            border-radius:8px;padding:0.65rem 0.9rem;margin-bottom:0.5rem;
+                            display:flex;align-items:center;gap:0.5rem;
+                            font-size:0.8rem;color:#F87171;'>
+                  🔒 Account locked after 3 failed attempts — use Forgot Password
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Sign In + Forgot Password on same row
+            col_rem, col_fp = st.columns([1, 1])
+            with col_rem:
+                remember_me = st.checkbox("Remember me", key="remember_me_cb",
+                                          value=st.session_state.get("remember_me", False))
+                if remember_me:
+                    st.session_state.remember_me = True
+            with col_fp:
+                if st.button("Forgot Password?", key="fp_tab"):
+                    st.session_state.show_reset_pw = True
+                    st.session_state.reset_step    = 1
+                    st.rerun()
+
+            sign_in_clicked = st.button("Sign In →", key="signin_v2",
+                                        disabled=is_locked, type="primary")
+
+            if sign_in_clicked:
+                users  = get_users()
+                failed = st.session_state.failed_logins
+                if not username or not password:
+                    st.error("Please enter both username and password.")
+                elif username not in users:
+                    st.error("Username not found. Check spelling or request an account.")
                 else:
-                    # Track failed attempt
-                    st.session_state.failed_logins[username] = failed.get(username, 0) + 1
-                    attempts_left = 3 - st.session_state.failed_logins[username]
-                    if attempts_left <= 0:
-                        st.error("⛔ Too many failed attempts. Account is now temporarily locked.")
-                        add_log(f"Account locked after 3 failed attempts: {username}")
+                    user = users[username]
+                    if user["password"] == password:
+                        if user.get("status","active") == "inactive":
+                            st.error("Account deactivated. Contact the administrator.")
+                        else:
+                            st.session_state.failed_logins.pop(username, None)
+                            totp_secret, totp_enabled = db_get_totp_secret(username)
+                            if totp_enabled and totp_secret:
+                                # Has Google Authenticator set up
+                                st.session_state.totp_verify_pending  = True
+                                st.session_state.totp_verify_username = username
+                                add_log(f"Login — Google Authenticator verification for {username}")
+                            else:
+                                # First login — set up Google Authenticator
+                                st.session_state.totp_setup_pending  = True
+                                st.session_state.totp_setup_secret   = generate_totp_secret()
+                                st.session_state.totp_setup_username = username
+                                add_log(f"Login — Google Authenticator setup for {username}")
+                            st.rerun()
                     else:
-                        st.error(f"Invalid credentials. {attempts_left} attempt{'s' if attempts_left>1 else ''} remaining before lockout.")
-                        add_log(f"Failed login attempt for: {username}")
-            else:
-                st.error("Invalid credentials. Please check and try again.")
-        st.markdown("</div>", unsafe_allow_html=True)
+                        st.session_state.failed_logins[username] = failed.get(username, 0) + 1
+                        left = 3 - st.session_state.failed_logins[username]
+                        if left <= 0:
+                            db_lock_account(username, 3)
+                            db_save_log(username, "Account LOCKED after 3 failed login attempts")
+                            for u, i in db_get_all_users().items():
+                                if i["role"] == "admin" and i.get("email"):
+                                    notify_admin_account_locked(username, 3, i["email"])
+                            st.error("Account locked. Administrator has been notified.")
+                        else:
+                            st.error(f"Incorrect password. {left} attempt{'s' if left>1 else ''} remaining.")
+                            add_log(f"Failed login {failed.get(username,0)+1}/3: {username}")
 
-        # Active accounts
-        users = get_users()
-        active = [(u,i) for u,i in users.items() if i.get("status")=="active"]
-        st.markdown("<div class='glass' style='animation:fadeSlideUp 0.6s ease; margin-top:0.75rem;'>", unsafe_allow_html=True)
-        st.markdown("<div class='sec-label'>Available Accounts</div>", unsafe_allow_html=True)
-        for uname,info in active:
-            bc = {"admin":"badge-admin","researcher":"badge-research","user":"badge-user"}.get(info["role"],"badge-user")
+            # Demo accounts compact strip — show only default 3
+            default_accounts = ["admin","researcher","user1"]
+            users_all = db_get_all_users()
+            demo_text = " · ".join([
+                f"{u} / {users_all[u]['password']}"
+                for u in default_accounts
+                if u in users_all
+            ])
             st.markdown(f"""
-            <div style='display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;
-                        border-bottom:1px solid var(--border);'>
-                <span class='badge {bc}'>{info['role']}</span>
-                <code style='color:var(--text-secondary);font-size:0.78rem;font-family:var(--font-mono);'>
-                    {uname} / {info['password']}
-                </code>
-                <span style='color:var(--text-muted);font-size:0.75rem;margin-left:auto;'>{info['name']}</span>
+            <div style='margin-top:1rem;background:rgba(255,255,255,0.04);
+                        border:1px solid rgba(255,255,255,0.08);border-radius:10px;
+                        padding:0.75rem 1rem;'>
+              <div style='font-family:"JetBrains Mono",monospace;font-size:0.62rem;
+                          color:#64748B;text-transform:uppercase;letter-spacing:0.12em;
+                          margin-bottom:0.35rem;'>🔑 Demo accounts</div>
+              <div style='font-family:"JetBrains Mono",monospace;font-size:0.72rem;
+                          color:#94A3B8;'>{demo_text}</div>
             </div>
             """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("""
-        <div style='text-align:center;margin-top:0.75rem;animation:fadeSlideUp 0.7s ease;'>
-            <div style='display:inline-flex;align-items:center;gap:1rem;font-family:var(--font-mono);
-                        font-size:0.65rem;color:var(--text-muted);'>
-                <span><span class='dot dot-green'></span> &nbsp;Gemini AI Online</span>
-                <span><span class='dot dot-cyan'></span> &nbsp;2FA Active</span>
-                <span><span class='dot dot-cyan'></span> &nbsp;SQLite DB</span>
+            # Theme + status row
+            current_theme = st.session_state.get("theme","dark")
+            st.markdown("""
+            <div style='display:flex;justify-content:center;gap:1.5rem;margin-top:1rem;
+                        font-family:"JetBrains Mono",monospace;font-size:0.65rem;color:#475569;'>
+              <span><span class='dot dot-green'></span> &nbsp;Gemini Active</span>
+              <span><span class='dot dot-cyan'></span> &nbsp;2FA Enabled</span>
+              <span><span class='dot dot-green'></span> &nbsp;SQLite Online</span>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-        # Register and forgot password links
-        st.markdown("""
-        <div style='text-align:center;margin-top:1rem;animation:fadeSlideUp 0.8s ease;'>
-            <span style='color:var(--text-muted);font-size:0.82rem;'>Don't have an account?</span>
-        </div>
-        """, unsafe_allow_html=True)
-        col_r, col_f = st.columns(2)
-        with col_r:
-            if st.button("📝  Request Account Access"):
-                st.session_state.show_register = True
-                st.rerun()
-        with col_f:
-            if st.button("🔑  Forgot Password?"):
-                st.session_state.show_reset_pw = True
-                st.session_state.reset_step    = 1
-                st.rerun()
-
-# ── REGISTRATION PAGE ─────────────────────────────────────────────────────────
-def page_register():
-    _, col, _ = st.columns([1,2,1])
-    with col:
-        st.markdown("""
-        <div style='animation:fadeSlideUp 0.4s ease; margin-top:2rem;'>
-        <div class='hero-wrap' style='text-align:center; padding:2.5rem 2rem;'>
-            <div class='hero-grid'></div>
-            <div class='brand-icon'>📝</div>
-            <div class='hero-eyebrow' style='justify-content:center; margin-top:0.5rem;'>Account Request</div>
-            <div class='hero-title' style='font-size:1.8rem;'>Request Access</div>
-            <div class='hero-sub'>Submit your details — an admin will review and approve your account</div>
-        </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("<div class='glass glass-cyan'>", unsafe_allow_html=True)
-        st.markdown("<div class='sec-label'>Your Details</div>", unsafe_allow_html=True)
-
-        c1, c2 = st.columns(2)
-        with c1:
-            reg_name     = st.text_input("Full Name",     placeholder="Jane Smith")
-            reg_username = st.text_input("Username",      placeholder="jsmith")
-        with c2:
-            reg_email    = st.text_input("Email Address", placeholder="jane@organisation.com")
-            reg_role     = st.selectbox("Requested Role", ["user", "researcher"])
-
-        reg_reason   = st.text_area("Reason for Access",
-                                     placeholder="Briefly describe why you need access to FraudShield...",
-                                     height=90)
-        reg_pass     = st.text_input("Choose Password", type="password", placeholder="Min 6 characters")
-        reg_pass2    = st.text_input("Confirm Password", type="password", placeholder="Repeat password")
-
-        if st.button("📤  Submit Request"):
-            if not reg_name or not reg_username or not reg_email or not reg_pass:
-                st.error("All fields are required.")
-            elif len(reg_pass) < 6:
-                st.error("Password must be at least 6 characters.")
-            elif reg_pass != reg_pass2:
-                st.error("Passwords do not match.")
-            elif reg_username in get_users():
-                st.error(f"Username '{reg_username}' is already taken. Please choose another.")
-            elif any(p["username"]==reg_username for p in st.session_state.pending_users):
-                st.error(f"A request for username '{reg_username}' is already pending admin approval.")
-            else:
-                st.session_state.pending_users.append({
-                    "username":  reg_username,
-                    "name":      reg_name,
-                    "email":     reg_email,
-                    "password":  reg_pass,
-                    "role":      reg_role,
-                    "reason":    reg_reason,
-                    "submitted": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                })
-                db_save_log("system", f"New account request submitted by {reg_username} ({reg_name}) for role: {reg_role}")
-
-                # Notify admin by email
-                admin_users = [i for i in get_users().values() if i["role"]=="admin" and i.get("email")]
-                for admin in admin_users:
-                    notify_admin_new_request(reg_name, reg_username, reg_role, reg_reason, admin["email"])
-
-                st.success(f"✅ Request submitted! An administrator will review your account and you will be notified by email at **{reg_email}** once a decision is made. You can then log in with username '{reg_username}'.")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class='glass glass-amber' style='margin-top:0.75rem;'>
-            <div style='font-family:var(--font-mono);font-size:0.72rem;color:var(--amber);'>
-                ⏳ &nbsp; Account requests are reviewed by administrators. 
-                You will be able to log in once your request is approved.
+        with tab_register:
+            st.markdown("""
+            <div style='text-align:center;padding:1rem 0 0.5rem;'>
+              <div style='color:#94A3B8;font-size:0.88rem;line-height:1.6;'>
+                Fill in your details below.<br>An admin will review and approve your account.
+              </div>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-        if st.button("← Back to Login"):
-            st.session_state.show_register = False
-            st.rerun()
+            reg_name     = st.text_input("Full Name", placeholder="Jane Smith", key="reg_name_tab")
+            reg_username = st.text_input("Username", placeholder="jsmith", key="reg_user_tab")
+            reg_email    = st.text_input("Email Address", placeholder="jane@example.com", key="reg_email_tab")
+            reg_role     = st.selectbox("Requested Role", ["user","researcher"], key="reg_role_tab")
+            reg_reason   = st.text_area("Reason for Access", placeholder="Why do you need access?",
+                                        height=75, key="reg_reason_tab")
+            reg_pass     = st.text_input("Password", type="password",
+                                         placeholder="Min 6 characters", key="reg_pass_tab")
+            reg_pass2    = st.text_input("Confirm Password", type="password",
+                                         placeholder="Repeat password", key="reg_pass2_tab")
+
+            if st.button("Submit Request", key="submit_reg_tab", type="primary"):
+                if not reg_name or not reg_username or not reg_email or not reg_pass:
+                    st.error("All fields are required.")
+                elif len(reg_pass) < 6:
+                    st.error("Password must be at least 6 characters.")
+                elif reg_pass != reg_pass2:
+                    st.error("Passwords do not match.")
+                elif reg_username in get_users():
+                    st.error(f"Username '{reg_username}' is already taken.")
+                elif any(p["username"]==reg_username for p in st.session_state.pending_users):
+                    st.error("A request for this username is already pending.")
+                else:
+                    st.session_state.pending_users.append({
+                        "username":  reg_username, "name":     reg_name,
+                        "email":     reg_email,    "password": reg_pass,
+                        "role":      reg_role,     "reason":   reg_reason,
+                        "submitted": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    })
+                    db_save_log("system", f"New account request: {reg_username} ({reg_name}) for {reg_role}")
+                    for u, i in db_get_all_users().items():
+                        if i["role"]=="admin" and i.get("email"):
+                            notify_admin_new_request(reg_name, reg_username, reg_role,
+                                                     reg_reason, i["email"])
+                    st.success(f"Request submitted. An admin will review your account and email you at {reg_email} once approved.")
+
 
 # ── PASSWORD RESET EMAIL ──────────────────────────────────────────────────────
-def notify_2fa_otp(name: str, otp: str, to_email: str) -> bool:
-    """Send 2FA OTP via email."""
+def notify_admin_account_locked(username: str, attempts: int, admin_email: str) -> bool:
+    """Alert admin when an account is locked due to too many failed attempts."""
+    users = db_get_all_users()
+    user_info = users.get(username, {})
     content = f"""
     <p style="color:#8892a4;line-height:1.7;margin:0 0 1rem;">
-        Hi <strong style="color:#eef2ff;">{name}</strong>,
+        A security event has been detected on the FraudShield platform.
     </p>
-    <p style="color:#8892a4;line-height:1.7;margin:0 0 1.5rem;">
-        A login attempt was made on your FraudShield account.
-        Use the code below to complete your Two-Factor Authentication.
-        This code expires in <strong style="color:#eef2ff;">5 minutes</strong>.
+    <div style="background:rgba(255,23,68,0.08);border:1px solid rgba(255,23,68,0.25);
+                border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.7rem;color:#ff1744;text-transform:uppercase;
+                    letter-spacing:0.15em;font-family:monospace;margin-bottom:0.75rem;">
+            Security Alert — Account Locked
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="color:#64748b;padding:0.35rem 0;font-size:0.85rem;width:40%;">Username</td>
+                <td style="color:#eef2ff;font-family:monospace;font-size:0.85rem;">{username}</td></tr>
+            <tr><td style="color:#64748b;padding:0.35rem 0;font-size:0.85rem;">Full Name</td>
+                <td style="color:#eef2ff;font-size:0.85rem;">{user_info.get('name','Unknown')}</td></tr>
+            <tr><td style="color:#64748b;padding:0.35rem 0;font-size:0.85rem;">Email</td>
+                <td style="color:#eef2ff;font-size:0.85rem;">{user_info.get('email','Not registered')}</td></tr>
+            <tr><td style="color:#64748b;padding:0.35rem 0;font-size:0.85rem;">Failed Attempts</td>
+                <td style="color:#ff1744;font-family:monospace;font-weight:700;font-size:0.85rem;">{attempts} attempts</td></tr>
+            <tr><td style="color:#64748b;padding:0.35rem 0;font-size:0.85rem;">Locked At</td>
+                <td style="color:#eef2ff;font-family:monospace;font-size:0.85rem;">
+                    {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</td></tr>
+            <tr><td style="color:#64748b;padding:0.35rem 0;font-size:0.85rem;">Status</td>
+                <td style="color:#ff1744;font-weight:700;font-size:0.85rem;">LOCKED</td></tr>
+        </table>
+    </div>
+    <p style="color:#8892a4;line-height:1.7;margin:0 0 1rem;">
+        This account has been automatically locked as a security measure.
+        If this was a legitimate user, you can unlock their account from
+        <strong style="color:#00d4ff;">User Management in the Admin portal</strong>.
     </p>
-
-    <div style="background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(124,58,237,0.08));
-                border:1px solid rgba(0,212,255,0.25);border-radius:14px;
-                padding:2.5rem;text-align:center;margin-bottom:1.5rem;">
-        <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;
-                    letter-spacing:0.2em;font-family:monospace;margin-bottom:0.75rem;">
-            Your verification code
-        </div>
-        <div style="font-family:monospace;font-size:3rem;font-weight:700;
-                    color:#00d4ff;letter-spacing:0.8rem;text-shadow:0 0 20px rgba(0,212,255,0.4);">
-            {otp}
-        </div>
-        <div style="color:#475569;font-size:0.75rem;margin-top:0.75rem;">
-            Valid for 5 minutes · Do not share this code
-        </div>
-    </div>
-
-    <div style="background:rgba(255,171,0,0.08);border:1px solid rgba(255,171,0,0.2);
-                border-radius:8px;padding:1rem;margin-bottom:1rem;">
-        <p style="color:#ffab00;font-size:0.82rem;margin:0;">
-            ⚠️ If you did not attempt to log in, your account may be at risk.
-            Change your password immediately and contact your administrator.
-        </p>
-    </div>
-
-    <p style="color:#4a5568;font-size:0.8rem;margin:0;">
-        Never share this code with anyone. FraudShield will never ask for your OTP.
+    <p style="color:#8892a4;line-height:1.7;margin:0;">
+        If you do not recognise this account or suspect a brute-force attack,
+        consider reviewing the audit logs for more details.
     </p>
     """
     return send_email(
-        to_email,
-        "🔐 FraudShield — Your Login Verification Code",
-        email_base(content, "Two-Factor Authentication")
+        admin_email,
+        f"🔒 Security Alert — Account Locked: @{username}",
+        email_base(content, "Account Lockout Detected")
     )
-    content = f"""
-    <p style="color:#8892a4;line-height:1.7;margin:0 0 1rem;">
-        Hi <strong style="color:#eef2ff;">{name}</strong>,
-    </p>
-    <p style="color:#8892a4;line-height:1.7;margin:0 0 1.5rem;">
-        We received a request to reset your FraudShield password.
-        Use the code below to proceed. This code expires in <strong style="color:#eef2ff;">10 minutes</strong>.
-    </p>
-    <div style="background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(124,58,237,0.08));
-                border:1px solid rgba(0,212,255,0.2);border-radius:12px;
-                padding:2rem;text-align:center;margin-bottom:1.5rem;">
-        <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;
-                    letter-spacing:0.15em;font-family:monospace;margin-bottom:0.5rem;">
-            Password Reset Code
-        </div>
-        <div style="font-family:monospace;font-size:2.5rem;font-weight:700;
-                    color:#00d4ff;letter-spacing:0.5rem;">
-            {otp}
-        </div>
-    </div>
-    <p style="color:#8892a4;line-height:1.7;margin:0;">
-        If you did not request a password reset, please ignore this email.
-        Your password will not be changed.
-    </p>
-    """
-    return send_email(to_email,
-                      "🔑 FraudShield Password Reset Code",
-                      email_base(content, "Password Reset Request"))
 
 # ── PASSWORD RESET PAGE ───────────────────────────────────────────────────────
 def page_reset_password():
@@ -1567,6 +1987,7 @@ def page_reset_password():
                         st.session_state.reset_otp      = otp
                         st.session_state.reset_username = r_username
                         sent = notify_password_reset_otp(user["name"], otp, r_email)
+                        st.session_state.reset_email_sent = sent
                         if sent:
                             st.success(f"✅ Reset code sent to {r_email}. Check your inbox.")
                         else:
@@ -1589,16 +2010,29 @@ def page_reset_password():
             st.markdown("<div class='glass glass-cyan'>", unsafe_allow_html=True)
             st.markdown("<div class='sec-label'>Step 2 of 3 — Enter Your Reset Code</div>", unsafe_allow_html=True)
 
-            # Demo code display
-            st.markdown(f"""
-            <div class='otp-wrap' style='padding:1.5rem;'>
-                <div style='font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);
-                            margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.1em;'>
-                    Demo mode — your code
+            # Only show demo code if email sending failed
+            if not st.session_state.get("reset_email_sent", False):
+                st.markdown(f"""
+                <div class='otp-wrap' style='padding:1.5rem;'>
+                    <div style='font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);
+                                margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.1em;'>
+                        Demo mode — your code (email not configured)
+                    </div>
+                    <div class='otp-code' style='font-size:2rem;'>{st.session_state.reset_otp}</div>
                 </div>
-                <div class='otp-code' style='font-size:2rem;'>{st.session_state.reset_otp}</div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style='background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);
+                            border-radius:10px;padding:0.85rem 1.1rem;margin-bottom:0.75rem;
+                            display:flex;align-items:center;gap:0.75rem;'>
+                    <span style='font-size:1.1rem;'>📧</span>
+                    <div style='color:var(--green);font-size:0.88rem;'>
+                        Check your email inbox and spam folder for the 6-digit code.
+                        The code expires in 10 minutes.
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
 
             entered_otp = st.text_input("Enter 6-digit code", placeholder="Enter code from email", max_chars=6)
             if st.button("✅  Verify Code"):
@@ -1634,9 +2068,10 @@ def page_reset_password():
                     db_save_log(uname, "Password reset via forgot password flow")
                     st.success("✅ Password updated successfully! You can now log in with your new password.")
                     # Clear reset state
-                    st.session_state.reset_step     = 1
-                    st.session_state.reset_otp      = ""
+                    st.session_state.reset_step      = 1
+                    st.session_state.reset_otp       = ""
                     st.session_state.reset_username  = ""
+                    st.session_state.reset_email_sent = False
                     st.session_state.show_reset_pw   = False
                     st.rerun()
             st.markdown("</div>", unsafe_allow_html=True)
@@ -1660,62 +2095,109 @@ def page_reset_password():
         """, unsafe_allow_html=True)
 
         if st.button("← Back to Login"):
-            st.session_state.show_reset_pw  = False
-            st.session_state.reset_step     = 1
-            st.session_state.reset_otp      = ""
-            st.session_state.reset_username = ""
+            st.session_state.show_reset_pw   = False
+            st.session_state.reset_step      = 1
+            st.session_state.reset_otp       = ""
+            st.session_state.reset_username  = ""
+            st.session_state.reset_email_sent = False
             st.rerun()
 
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
 def render_sidebar():
     with st.sidebar:
+        # Brand logo
         st.markdown("""
-        <div class='brand-wrap'>
-            <div class='brand-icon'>🛡️</div>
-            <div class='brand-name'>FraudShield</div>
-            <div class='brand-tag'>Intelligence Platform</div>
+        <div style='padding:1.25rem 0.5rem 1rem;display:flex;align-items:center;gap:0.75rem;'>
+            <div style='width:34px;height:34px;border-radius:8px;
+                        background:linear-gradient(135deg,#7C3AED,#06B6D4);
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:1rem;box-shadow:0 4px 12px rgba(124,58,237,0.35);'>🛡️</div>
+            <div>
+                <div style='font-family:"Manrope",sans-serif;font-size:0.95rem;font-weight:800;
+                            color:var(--text-primary);letter-spacing:-0.02em;'>FraudShield</div>
+                <div style='font-family:"JetBrains Mono",monospace;font-size:0.58rem;
+                            color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;'>
+                    Fraud Intelligence Platform
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
         role = st.session_state.role
         initials = "".join(w[0].upper() for w in st.session_state.user_name.split()[:2])
         bc = {"admin":"badge-admin","researcher":"badge-research","user":"badge-user"}.get(role,"badge-user")
+        email = st.session_state.get("user_email","")
 
         st.markdown(f"""
-        <div class='user-card'>
-            <div class='user-avatar'>{initials}</div>
-            <div class='user-name'>{st.session_state.user_name}</div>
-            <div class='user-handle'>@{st.session_state.username}</div>
-            <div style='margin-top:0.6rem;display:flex;justify-content:center;gap:0.5rem;'>
-                <span class='badge {bc}'>{role}</span>
-                <span class='badge badge-verified'>✓ 2FA</span>
+        <div style='background:var(--bg-elevated);border:1px solid var(--border);
+                    border-radius:12px;padding:1rem;margin-bottom:1.1rem;'>
+            <div style='display:flex;align-items:center;gap:0.75rem;'>
+                <div style='width:36px;height:36px;border-radius:8px;flex-shrink:0;
+                            background:linear-gradient(135deg,var(--primary),var(--cyan));
+                            display:flex;align-items:center;justify-content:center;
+                            font-family:"Manrope",sans-serif;font-size:0.88rem;font-weight:800;
+                            color:white;box-shadow:0 2px 8px var(--primary-glow);'>
+                    {initials}
+                </div>
+                <div style='min-width:0;'>
+                    <div style='font-family:"Manrope",sans-serif;font-weight:700;
+                                font-size:0.9rem;color:var(--text-primary);
+                                white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>
+                        {st.session_state.user_name}
+                    </div>
+                    {f'<div style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{email}</div>' if email else ''}
+                </div>
+            </div>
+            <div style='margin-top:0.65rem;display:flex;gap:0.4rem;'>
+                <span class='badge {bc}'>{role.upper()}</span>
+                <span class='badge badge-verified'>✓ TOTP</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("<div class='sec-label' style='margin:0 0.5rem 0.75rem;'>Navigation</div>", unsafe_allow_html=True)
+        st.markdown("<div class='nav-section'>Navigation</div>", unsafe_allow_html=True)
 
         if role=="admin":
             admin_opts = [
                 "🏠  Dashboard","👥  User Management","🖥️  Active Sessions",
                 "📊  Analytics","📋  Audit Logs","⚙️  Model Deployment","📢  Announcements"
             ]
-            if "admin_nav" not in st.session_state:
-                st.session_state.admin_nav = admin_opts[0]
-            page = st.radio("", admin_opts, key="admin_nav", label_visibility="collapsed")
+            cur = st.session_state.get("current_page", admin_opts[0])
+            idx = next((i for i,o in enumerate(admin_opts) if o==cur), 0)
+            page = st.radio("", admin_opts, index=idx,
+                            label_visibility="collapsed")
+            st.session_state.current_page = page
+
             pending = st.session_state.pending_users
             if pending:
                 st.markdown(f"""
-                <div style='margin-top:0.75rem;padding:0.75rem;
-                            background:rgba(255,171,0,0.1);border:1px solid rgba(255,171,0,0.3);
-                            border-radius:var(--radius-sm);'>
-                    <div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--amber);
-                                display:flex;align-items:center;gap:0.5rem;'>
-                        <span class='dot dot-amber'></span>
-                        <strong>{len(pending)} pending approval{'s' if len(pending)>1 else ''}</strong>
+                <div style='margin:0.5rem 0;padding:0.65rem 0.8rem;
+                            background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);
+                            border-radius:8px;display:flex;align-items:center;gap:0.5rem;'>
+                    <span class='dot dot-amber'></span>
+                    <div>
+                        <div style='font-family:"JetBrains Mono",monospace;font-size:0.7rem;
+                                    color:var(--amber);font-weight:700;'>
+                            {len(pending)} pending approval{'s' if len(pending)>1 else ''}
+                        </div>
+                        <div style='font-size:0.68rem;color:var(--text-muted);'>User Management</div>
                     </div>
-                    <div style='font-size:0.72rem;color:var(--text-muted);margin-top:0.3rem;'>
-                        Go to User Management → Pending Requests
+                </div>
+                """, unsafe_allow_html=True)
+
+            lockouts_df = db_get_active_lockouts()
+            if len(lockouts_df) > 0:
+                st.markdown(f"""
+                <div style='margin:0.5rem 0;padding:0.65rem 0.8rem;
+                            background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);
+                            border-radius:8px;display:flex;align-items:center;gap:0.5rem;'>
+                    <span class='dot dot-red'></span>
+                    <div>
+                        <div style='font-family:"JetBrains Mono",monospace;font-size:0.7rem;
+                                    color:var(--red);font-weight:700;'>
+                            {len(lockouts_df)} account{'s' if len(lockouts_df)>1 else ''} LOCKED
+                        </div>
+                        <div style='font-size:0.68rem;color:var(--text-muted);'>Security Alert</div>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1725,21 +2207,43 @@ def render_sidebar():
                 "🏠  Dashboard","🔬  Model Training","📈  Evaluation",
                 "📉  ROC & PR Curves","🕸️  Model Radar","🔍  Feature Analysis","📤  Export"
             ]
-            if "res_nav" not in st.session_state:
-                st.session_state.res_nav = res_opts[0]
-            page = st.radio("", res_opts, key="res_nav", label_visibility="collapsed")
+            cur = st.session_state.get("current_page", res_opts[0])
+            idx = next((i for i,o in enumerate(res_opts) if o==cur), 0)
+            page = st.radio("", res_opts, index=idx,
+                            label_visibility="collapsed")
+            st.session_state.current_page = page
 
         else:
             user_opts = [
                 "🏠  Dashboard","🔎  Single Transaction","📂  Batch Upload",
                 "📜  History","ℹ️  About"
             ]
-            if "user_nav" not in st.session_state:
-                st.session_state.user_nav = user_opts[0]
-            page = st.radio("", user_opts, key="user_nav", label_visibility="collapsed")
+            cur = st.session_state.get("current_page", user_opts[0])
+            idx = next((i for i,o in enumerate(user_opts) if o==cur), 0)
+            page = st.radio("", user_opts, index=idx,
+                            label_visibility="collapsed")
+            st.session_state.current_page = page
 
-        st.markdown("<div style='margin-top:1.5rem;'>", unsafe_allow_html=True)
-        if st.button("↩  Sign Out"):
+        # Spacer then Sign Out at bottom
+        st.markdown("<div style='margin-top:1.25rem;'>", unsafe_allow_html=True)
+
+        # Sign Out button styled like reference (orange accent)
+        st.markdown("""
+        <style>
+        div[data-testid="stButton"]:has(button[key="signout_btn"]) > button {
+            background: rgba(239,68,68,0.1) !important;
+            border: 1px solid rgba(239,68,68,0.3) !important;
+            color: #F87171 !important;
+            font-weight: 600 !important;
+        }
+        div[data-testid="stButton"]:has(button[key="signout_btn"]) > button:hover {
+            background: rgba(239,68,68,0.2) !important;
+            border-color: #EF4444 !important;
+            color: #FCA5A5 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        if st.button("🚪  Sign Out", key="signout_btn"):
             add_log("User signed out")
             if st.session_state.get("session_token"):
                 db_delete_session(st.session_state.session_token)
@@ -1747,7 +2251,7 @@ def render_sidebar():
             except: pass
             for k in ["logged_in","username","role","user_name","user_email",
                       "otp_pending","otp_code","otp_username","last_result",
-                      "last_inputs","session_token"]:
+                      "last_inputs","session_token","totp_setup_pending","totp_verify_pending"]:
                 if k in st.session_state:
                     st.session_state[k] = False if k=="logged_in" else ""
             st.rerun()
@@ -1758,31 +2262,70 @@ def render_sidebar():
             ok = r.status_code==200
         except: ok=False
 
+        # System status panel
+        lockouts_count = len(db_get_active_lockouts()) if st.session_state.role=="admin" else 0
+        lockout_html = ""
+        if lockouts_count > 0:
+            lockout_html = f"""
+                <div style='display:flex;align-items:center;justify-content:space-between;
+                            margin-top:0.25rem;padding-top:0.5rem;border-top:1px solid rgba(239,68,68,0.2);'>
+                    <span style='display:flex;align-items:center;gap:0.4rem;
+                                 font-family:var(--font-mono);font-size:0.78rem;color:#F87171;'>
+                        <span class='dot dot-red'></span>Locked
+                    </span>
+                    <span style='font-family:var(--font-mono);font-size:0.78rem;
+                                 color:#F87171;font-weight:700;'>{lockouts_count}</span>
+                </div>"""
+
         st.markdown(f"""
-        <div style='margin-top:1.2rem;padding:0.75rem;background:var(--bg-elevated);
-                    border:1px solid var(--border);border-radius:var(--radius-sm);'>
-            <div style='font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);
-                        text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;'>System Status</div>
-            <div style='display:flex;flex-direction:column;gap:0.35rem;'>
-                <div style='display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.7rem;'>
-                    <span class='dot {"dot-green" if ok else "dot-red"}'></span>
-                    <span style='color:var(--text-secondary);'>API {'Online' if ok else 'Offline'}</span>
+        <div style='margin-top:1rem;padding:1rem;background:var(--bg-elevated);
+                    border:1px solid var(--border);border-radius:10px;'>
+            <div style='font-family:var(--font-mono);font-size:0.68rem;font-weight:600;
+                        color:var(--text-muted);text-transform:uppercase;
+                        letter-spacing:0.12em;margin-bottom:0.75rem;'>System Status</div>
+            <div style='display:flex;flex-direction:column;gap:0.5rem;'>
+                <div style='display:flex;align-items:center;justify-content:space-between;'>
+                    <span style='display:flex;align-items:center;gap:0.5rem;
+                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
+                        <span class='dot {"dot-green" if ok else "dot-red"}'></span>FastAPI
+                    </span>
+                    <span style='font-family:var(--font-mono);font-size:0.75rem;
+                                 color:{"var(--green)" if ok else "var(--red)"};font-weight:600;'>
+                        {"Online" if ok else "Offline"}
+                    </span>
                 </div>
-                <div style='display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.7rem;'>
-                    <span class='dot dot-cyan'></span>
-                    <span style='color:var(--text-secondary);'>Gemini AI Active</span>
+                <div style='display:flex;align-items:center;justify-content:space-between;'>
+                    <span style='display:flex;align-items:center;gap:0.5rem;
+                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
+                        <span class='dot dot-cyan'></span>Gemini AI
+                    </span>
+                    <span style='font-family:var(--font-mono);font-size:0.75rem;
+                                 color:var(--cyan);font-weight:600;'>Active</span>
                 </div>
-                <div style='display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.7rem;'>
-                    <span class='dot dot-green'></span>
-                    <span style='color:var(--text-secondary);'>SQLite Connected</span>
+                <div style='display:flex;align-items:center;justify-content:space-between;'>
+                    <span style='display:flex;align-items:center;gap:0.5rem;
+                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
+                        <span class='dot dot-green'></span>Database
+                    </span>
+                    <span style='font-family:var(--font-mono);font-size:0.75rem;
+                                 color:var(--green);font-weight:600;'>Connected</span>
                 </div>
-                <div style='display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.7rem;'>
-                    <span class='dot dot-amber'></span>
-                    <span style='color:var(--text-secondary);'>{len(get_users())} registered users</span>
+                <div style='display:flex;align-items:center;justify-content:space-between;'>
+                    <span style='display:flex;align-items:center;gap:0.5rem;
+                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
+                        <span class='dot dot-amber'></span>Users
+                    </span>
+                    <span style='font-family:var(--font-mono);font-size:0.75rem;
+                                 color:var(--amber);font-weight:600;'>{len(get_users())}</span>
                 </div>
+                {lockout_html}
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+        # Theme toggle button
+        current_theme = st.session_state.get("theme","dark")
+        theme_icon  = "☀️" if current_theme=="dark" else "🌙"
         return page
 
 # ── DASHBOARD ─────────────────────────────────────────────────────────────────
@@ -1842,22 +2385,22 @@ def dashboard_admin():
     st.markdown(f"""
     <div class='kpi-grid'>
         <div class='kpi'>
-            <div class='kpi-label'>Registered Users</div>
+            <span class='kpi-icon'>👥</span><div class='kpi-label'>Registered Users</div>
             <div class='kpi-value'>{len(users)}</div>
             <div class='kpi-sub'>{active_u} active · {len(users)-active_u} inactive</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Active Sessions</div>
+            <span class='kpi-icon'>🖥️</span><div class='kpi-label'>Active Sessions</div>
             <div class='kpi-value' style='color:var(--green);'>{active_ses}</div>
             <div class='kpi-sub'>Currently logged in</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Pending Approvals</div>
+            <span class='kpi-icon'>⏳</span><div class='kpi-label'>Pending Approvals</div>
             <div class='kpi-value' style='color:{"var(--amber)" if pending>0 else "var(--text-muted)"};'>{pending}</div>
             <div class='kpi-sub'>{"Needs review" if pending>0 else "All clear"}</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Total Predictions</div>
+            <span class='kpi-icon'>⚡</span><div class='kpi-label'>Total Predictions</div>
             <div class='kpi-value'>{total_p}</div>
             <div class='kpi-sub'>{fraud_p} fraud detected</div>
         </div>
@@ -1874,7 +2417,7 @@ def dashboard_admin():
             user_counts = df_all.groupby("username").size().reset_index(name="count").sort_values("count",ascending=True)
             fig_u = go.Figure(go.Bar(
                 x=user_counts["count"], y=user_counts["username"],
-                orientation="h", marker_color="#00d4ff", marker_line_width=0
+                orientation="h", marker_color="#7C3AED", marker_line_width=0
             ))
             fig_u.update_layout(**CHART_LAYOUT, height=260, xaxis_title="Predictions Made")
             st.plotly_chart(fig_u, use_container_width=True)
@@ -1891,7 +2434,7 @@ def dashboard_admin():
                 labels=["Legitimate","Fraudulent"],
                 values=[total_p-fraud_p, fraud_p],
                 hole=0.62,
-                marker=dict(colors=["#00e676","#ff1744"], line=dict(width=0)),
+                marker=dict(colors=["#10B981","#EF4444"], line=dict(width=0)),
                 textinfo="label+percent", textfont=dict(color="#eef2ff",size=11)
             ))
             fig_d.update_layout(**CHART_LAYOUT, height=260, showlegend=False)
@@ -1911,11 +2454,11 @@ def dashboard_admin():
         role_counts = {}
         for u in users.values():
             role_counts[u["role"]] = role_counts.get(u["role"], 0) + 1
-        colors_map  = {"admin":"#ff1744","researcher":"#ffab00","user":"#00e676"}
+        colors_map  = {"admin":"#EF4444","researcher":"#F59E0B","user":"#10B981"}
         fig_r = go.Figure(go.Pie(
             labels=list(role_counts.keys()), values=list(role_counts.values()),
             hole=0.5, textinfo="label+value",
-            marker=dict(colors=[colors_map.get(r,"#00d4ff") for r in role_counts.keys()],
+            marker=dict(colors=[colors_map.get(r,"#7C3AED") for r in role_counts.keys()],
                         line=dict(width=0))
         ))
         fig_r.update_layout(**CHART_LAYOUT, height=220, showlegend=False)
@@ -1923,33 +2466,38 @@ def dashboard_admin():
         st.markdown("</div>", unsafe_allow_html=True)
 
     with c4:
-        # Quick actions
-        st.markdown("""
-        <div class='glass glass-amber'>
-            <div class='sec-label'>Quick Actions</div>
-            <div style='display:flex;flex-direction:column;gap:0.6rem;'>
-        """, unsafe_allow_html=True)
-        actions = [
-            ("👥", "User Management",  "Manage accounts and roles"),
-            ("🖥️", "Active Sessions",  f"{active_ses} session(s) live"),
-            ("📋", "Audit Logs",       f"{len(logs_df)} entries logged"),
-            ("📢", "Announcements",    "Post platform notices"),
+        st.markdown("<div class='glass glass-amber'>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-label'>Quick Actions</div>", unsafe_allow_html=True)
+
+        quick_actions = [
+            ("👥", "User Management",  "Manage accounts and roles",    "👥  User Management"),
+            ("🖥️", "Active Sessions",  f"{active_ses} session(s) live","🖥️  Active Sessions"),
+            ("📋", "Audit Logs",       f"{len(logs_df)} entries logged","📋  Audit Logs"),
+            ("📢", "Announcements",    "Post platform notices",         "📢  Announcements"),
         ]
         if pending > 0:
-            actions.insert(0, ("⏳", "Pending Approvals", f"{pending} request(s) waiting"))
-        for icon, title, desc in actions:
+            quick_actions.insert(0, ("⏳", "Pending Approvals",
+                                     f"{pending} request(s) waiting",  "👥  User Management"))
+
+        for icon, title, desc, nav_key in quick_actions:
             st.markdown(f"""
             <div style='background:var(--bg-elevated);border:1px solid var(--border);
-                        border-radius:8px;padding:0.65rem 1rem;
-                        display:flex;align-items:center;gap:0.75rem;'>
-                <span style='font-size:1.2rem;'>{icon}</span>
-                <div>
-                    <div style='color:var(--text-primary);font-size:0.85rem;font-weight:600;'>{title}</div>
-                    <div style='color:var(--text-muted);font-size:0.72rem;'>{desc}</div>
+                        border-radius:8px;padding:0.65rem 1rem;margin-bottom:0.4rem;
+                        display:flex;align-items:center;gap:0.75rem;
+                        transition:border-color 0.2s;cursor:pointer;'>
+                <span style='font-size:1.1rem;'>{icon}</span>
+                <div style='flex:1;'>
+                    <div style='color:var(--text-primary);font-size:0.88rem;font-weight:600;'>{title}</div>
+                    <div style='color:var(--text-muted);font-size:0.75rem;'>{desc}</div>
                 </div>
+                <span style='color:var(--text-muted);font-size:0.75rem;'>→</span>
             </div>
             """, unsafe_allow_html=True)
-        st.markdown("</div></div>", unsafe_allow_html=True)
+            if st.button(f"Go to {title}", key=f"qa_{nav_key}"):
+                st.session_state.current_page = nav_key
+                st.rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
     # Recent audit log
     st.markdown("<div class='glass'>", unsafe_allow_html=True)
@@ -1960,7 +2508,7 @@ def dashboard_admin():
             st.markdown(f"""
             <div class='log-row'>
                 <span style='color:var(--text-muted);'>[{row['timestamp']}]</span>
-                &nbsp;<span style='color:var(--cyan);'>{row['username']}</span>
+                &nbsp;<span style='color:var(--primary);font-weight:600;'>{row['username']}</span>
                 &nbsp;<span style='color:var(--text-muted);'>→</span>&nbsp;{row['action']}
             </div>
             """, unsafe_allow_html=True)
@@ -1992,22 +2540,22 @@ def dashboard_researcher():
     st.markdown("""
     <div class='kpi-grid'>
         <div class='kpi'>
-            <div class='kpi-label'>Best ROC-AUC</div>
+            <span class='kpi-icon'>🎯</span><div class='kpi-label'>Best ROC-AUC</div>
             <div class='kpi-value'>0.9926</div>
             <div class='kpi-sub'>Bagging · updated dataset</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Fraud Recall</div>
+            <span class='kpi-icon'>🔍</span><div class='kpi-label'>Fraud Recall</div>
             <div class='kpi-value' style='color:var(--green);'>96%</div>
             <div class='kpi-sub'>After synthetic augmentation</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Best Precision</div>
+            <span class='kpi-icon'>🎯</span><div class='kpi-label'>Best Precision</div>
             <div class='kpi-value' style='color:var(--cyan);'>0.79</div>
             <div class='kpi-sub'>Bagging classifier</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Models Trained</div>
+            <span class='kpi-icon'>🧠</span><div class='kpi-label'>Models Trained</div>
             <div class='kpi-value' style='color:var(--amber);'>10+</div>
             <div class='kpi-sub'>Across all techniques</div>
         </div>
@@ -2028,7 +2576,7 @@ def dashboard_researcher():
             "ROC-AUC":   [0.9943, 0.9926, 0.9908, 0.9948],
         })
         fig = px.bar(data, x="Model", y=["Precision","Recall","F1"], barmode="group",
-                     color_discrete_map={"Precision":"#00d4ff","Recall":"#ff1744","F1":"#00e676"})
+                     color_discrete_map={"Precision":"#7C3AED","Recall":"#06B6D4","F1":"#10B981"})
         fig.update_layout(**CHART_LAYOUT, height=260)
         fig.update_traces(marker_line_width=0)
         st.plotly_chart(fig, use_container_width=True)
@@ -2124,7 +2672,7 @@ def dashboard_researcher():
     original  = [0.79, 0.85, 0.82, 9.777]
     updated   = [0.28, 0.96, 0.44, 9.926]
     fig_s.add_trace(go.Bar(name="Original Dataset",         x=metrics, y=[0.79,0.85,0.82,0.9777], marker_color="#4a5568", marker_line_width=0))
-    fig_s.add_trace(go.Bar(name="+ 500 Synthetic Fraud",    x=metrics, y=[0.28,0.96,0.44,0.9926], marker_color="#00d4ff", marker_line_width=0))
+    fig_s.add_trace(go.Bar(name="+ 500 Synthetic Fraud",    x=metrics, y=[0.28,0.96,0.44,0.9926], marker_color="#7C3AED", marker_line_width=0))
     fig_s.update_layout(**CHART_LAYOUT, height=260, barmode="group",
                          annotations=[dict(text="Recall improved: 0.85→0.96 | ROC-AUC: 0.9777→0.9926",
                                           x=0.5, y=1.08, xref="paper", yref="paper",
@@ -2162,22 +2710,22 @@ def dashboard_user():
     st.markdown(f"""
     <div class='kpi-grid'>
         <div class='kpi'>
-            <div class='kpi-label'>My Total Checks</div>
+            <span class='kpi-icon'>🔎</span><div class='kpi-label'>My Total Checks</div>
             <div class='kpi-value'>{my_total}</div>
             <div class='kpi-sub'>Transactions analysed</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Fraud Detected</div>
+            <span class='kpi-icon'>🚨</span><div class='kpi-label'>Fraud Detected</div>
             <div class='kpi-value' style='color:var(--red);'>{my_fraud}</div>
             <div class='kpi-sub'>Flagged as suspicious</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>Safe Transactions</div>
+            <span class='kpi-icon'>✅</span><div class='kpi-label'>Safe Transactions</div>
             <div class='kpi-value' style='color:var(--green);'>{my_legit}</div>
             <div class='kpi-sub'>Cleared as legitimate</div>
         </div>
         <div class='kpi'>
-            <div class='kpi-label'>My Fraud Rate</div>
+            <span class='kpi-icon'>📊</span><div class='kpi-label'>My Fraud Rate</div>
             <div class='kpi-value' style='color:{"var(--red)" if my_rate>5 else "var(--green)"};'>{my_rate}%</div>
             <div class='kpi-sub'>{"Above average — review!" if my_rate>5 else "Looking healthy"}</div>
         </div>
@@ -2192,7 +2740,7 @@ def dashboard_user():
         st.markdown("<div class='sec-label'>Last Transaction Checked</div>", unsafe_allow_html=True)
         if last_res is not None:
             is_fraud  = last_res["result"]=="Fraudulent"
-            v_color   = "#ff1744" if is_fraud else "#00e676"
+            v_color   = "#EF4444" if is_fraud else "#10B981"
             v_icon    = "⛔" if is_fraud else "✅"
             cat_label = str(last_res["category"]).replace("_"," ").title()
             prob_pct  = round(last_res["fraud_probability"]*100,1)
@@ -2415,7 +2963,7 @@ def page_fraud_detection():
             box_cls     = "result-fraud" if is_fraud else "result-legit"
             v_cls       = "verdict-fraud" if is_fraud else "verdict-legit"
             icon        = "⛔" if is_fraud else "✅"
-            risk_color  = "#ff1744" if is_fraud else "#00e676"
+            risk_color  = "#EF4444" if is_fraud else "#10B981"
 
             st.markdown(f"""
             <div class='result-box {box_cls}'>
@@ -2435,7 +2983,7 @@ def page_fraud_detection():
                             text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;'>
                     Recommended Action
                 </div>
-                <div style='color:{risk_color};font-weight:700;font-family:var(--font-display);'>
+                <div style='color:{risk_color};font-weight:700;font-family:var(--font-display);font-size:1.05rem;'>
                     {result.get("recommended_action","Review")}
                 </div>
             </div>
@@ -2445,7 +2993,7 @@ def page_fraud_detection():
             st.markdown(f"""
             <div class='glass glass-violet'>
                 <div class='sec-label'>AI Explanation &nbsp; {gemini_tag}</div>
-                <p style='color:var(--text-secondary);font-size:0.9rem;line-height:1.8;margin:0;'>{explanation}</p>
+                <p style='color:var(--text-secondary);font-size:0.95rem;line-height:1.8;margin:0;'>{explanation}</p>
                 <div style='margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid var(--border);
                             font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);'>
                     {"Google Gemini 1.5 Flash" if used_gemini else "Rule-based fallback"} ·
@@ -2453,6 +3001,65 @@ def page_fraud_detection():
                 </div>
             </div>
             """, unsafe_allow_html=True)
+
+            # Deep AI Analysis expander — only for fraud
+            if is_fraud and GEMINI_AVAILABLE and GEMINI_API_KEY:
+                with st.expander("🔍  Deep Analysis — Why was this flagged as fraud?", expanded=False):
+                    with st.spinner("Gemini AI is analysing this transaction..."):
+                        try:
+                            inputs = st.session_state.get("last_inputs", {})
+                            prompt = f"""You are a fraud intelligence expert at a financial institution.
+
+A transaction has been flagged as FRAUDULENT by our ML model with {prob:.1%} confidence.
+
+Transaction Details:
+- Amount: ${inputs.get('amt', 0):.2f}
+- Category: {inputs.get('category', 'Unknown')}
+- Time: {inputs.get('trans_hour', 12)}:00 ({'night' if inputs.get('is_night', 0) else 'day'})
+- Customer Age: {inputs.get('age', 35)}
+- Distance to Merchant: {inputs.get('distance', 0):.1f} km
+- City Population: {inputs.get('city_pop', 100000):,}
+- Risk Level: {result.get('risk_band', 'High Risk')}
+- Fraud Probability: {prob:.1%}
+
+Please provide a detailed explanation in 3 clearly labelled sections:
+
+**WHY THIS WAS FLAGGED:**
+Explain specifically what combination of factors triggered the fraud alert. Be concrete about which features were unusual.
+
+**WHAT MADE IT SUSPICIOUS:**
+Describe what a normal legitimate transaction looks like for this category and how this transaction deviated from that pattern.
+
+**WHAT YOU SHOULD DO:**
+Give the customer 3 specific actionable steps they can take right now to protect themselves.
+
+Write in plain English addressing the customer directly. Be professional but approachable."""
+
+                            model    = genai.GenerativeModel("gemini-1.5-flash")
+                            response = model.generate_content(prompt)
+                            ai_text  = response.text.strip()
+
+                            sections = ai_text.split("**")
+                            formatted = ai_text
+                            for i in range(1, len(sections), 2):
+                                formatted = formatted.replace(
+                                    f"**{sections[i]}**",
+                                    f"<strong style='color:var(--primary);'>{sections[i]}</strong>"
+                                )
+
+                            st.markdown(f"""
+                            <div style='background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.15);
+                                        border-radius:12px;padding:1.5rem;line-height:1.85;
+                                        color:var(--text-secondary);font-size:0.95rem;'>
+                                {formatted}
+                            </div>
+                            <div style='margin-top:0.75rem;font-family:"JetBrains Mono",monospace;
+                                        font-size:0.65rem;color:var(--text-muted);text-align:right;'>
+                                Generated by Google Gemini 1.5 Flash · {datetime.now().strftime("%H:%M:%S")}
+                            </div>
+                            """, unsafe_allow_html=True)
+                        except Exception as e:
+                            st.warning("AI analysis unavailable. Please check your Gemini API key.")
         else:
             st.markdown("""
             <div class='glass' style='text-align:center;padding:3rem 1rem;'>
@@ -2629,8 +3236,8 @@ def page_batch_upload():
                     prob      = row["Probability"]
                     risk      = row["Risk"]
                     bar_pct   = int(prob * 100)
-                    bar_color = "#ff1744" if prob>=0.8 else ("#ffab00" if prob>=0.5 else "#00e676")
-                    v_color   = "#ff1744" if is_fraud else "#00e676"
+                    bar_color = "#EF4444" if prob>=0.8 else ("#F59E0B" if prob>=0.5 else "#10B981")
+                    v_color   = "#EF4444" if is_fraud else "#10B981"
                     v_icon    = "⛔" if is_fraud else "✅"
                     v_text    = "Fraudulent" if is_fraud else "Legitimate"
                     bg_color  = "rgba(255,23,68,0.04)" if is_fraud else "rgba(0,230,118,0.02)"
@@ -2681,7 +3288,7 @@ def page_batch_upload():
                         labels=["Safe","Needs Review","Block Now"],
                         values=[low_risk, med_risk, high_risk],
                         hole=0.6,
-                        marker_colors=["#00e676","#ffab00","#ff1744"],
+                        marker_colors=["#10B981","#F59E0B","#EF4444"],
                         textinfo="label+percent",
                         textfont={"color":"#eef2ff","size":12}
                     ))
@@ -2710,7 +3317,7 @@ def page_batch_upload():
                             x=cat_counts.values,
                             y=cat_labels,
                             orientation="h",
-                            marker_color="#ff1744",
+                            marker_color="#EF4444",
                             marker_line_width=0,
                         ))
                         fig_cat.update_layout(**CHART_LAYOUT,height=240,
@@ -2757,18 +3364,219 @@ def page_batch_upload():
                 st.download_button("📥 Download Results CSV",
                                    df_res.to_csv(index=False),
                                    "fraud_results.csv","text/csv")
+
+                # ── Gemini AI Explanations — visual redesign ─────────────────
+                fraud_items = [r for r in results if r["Prediction"] == "Fraudulent"]
+
+                if fraud_items and GEMINI_AVAILABLE and GEMINI_API_KEY:
+
+                    st.markdown(f"""
+                    <div style='background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(6,182,212,0.05));
+                                border:1px solid rgba(124,58,237,0.25);border-radius:16px;
+                                padding:1.75rem;margin:1.5rem 0;'>
+                        <div style='display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;'>
+                            <div style='font-size:2rem;'>🤖</div>
+                            <div>
+                                <div style='font-family:"Manrope",sans-serif;font-size:1.15rem;
+                                            font-weight:800;color:var(--text-primary);'>
+                                    AI Fraud Investigation Report
+                                </div>
+                                <div style='font-size:0.82rem;color:var(--text-muted);margin-top:0.2rem;'>
+                                    Google Gemini 1.5 Flash has investigated each flagged transaction —
+                                    click any card to read the full analysis
+                                </div>
+                            </div>
+                            <span style='margin-left:auto;background:rgba(124,58,237,0.15);
+                                         border:1px solid rgba(124,58,237,0.3);border-radius:20px;
+                                         padding:0.25rem 0.75rem;font-family:"JetBrains Mono",monospace;
+                                         font-size:0.65rem;color:#A78BFA;white-space:nowrap;'>
+                                Gemini AI · {min(len(fraud_items),10)} analyses
+                            </span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    risk_config = {
+                        "High Risk":   ("#EF4444","rgba(239,68,68,0.08)","rgba(239,68,68,0.25)","🔴"),
+                        "Medium Risk": ("#F59E0B","rgba(245,158,11,0.08)","rgba(245,158,11,0.25)","🟡"),
+                        "Low Risk":    ("#10B981","rgba(16,185,129,0.08)","rgba(16,185,129,0.25)","🟢"),
+                    }
+
+                    for item in fraud_items[:10]:
+                        amt      = item["Amount"]
+                        category = str(item["Category"])
+                        prob     = item["Probability"]
+                        risk     = item["Risk"]
+                        row_num  = item["#"]
+                        r_color, r_bg, r_border, r_dot = risk_config.get(risk, ("#EF4444","rgba(239,68,68,0.08)","rgba(239,68,68,0.25)","🔴"))
+                        prob_pct = f"{prob:.0%}" if isinstance(prob, float) else str(prob)
+
+                        with st.expander(f"{r_dot}  Transaction #{row_num}  ·  {amt}  ·  {category}  ·  {risk}"):
+
+                            # Transaction summary strip
+                            st.markdown(f"""
+                            <div style='display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;
+                                        margin-bottom:1.25rem;'>
+                                <div style='background:var(--bg-elevated);border:1px solid var(--border);
+                                            border-radius:10px;padding:0.85rem;text-align:center;'>
+                                    <div style='font-family:"JetBrains Mono",monospace;font-size:0.6rem;
+                                                color:var(--text-muted);text-transform:uppercase;margin-bottom:0.3rem;'>
+                                        Transaction
+                                    </div>
+                                    <div style='font-family:"Manrope",sans-serif;font-size:1.1rem;
+                                                font-weight:800;color:var(--text-primary);'>#{row_num}</div>
+                                </div>
+                                <div style='background:var(--bg-elevated);border:1px solid var(--border);
+                                            border-radius:10px;padding:0.85rem;text-align:center;'>
+                                    <div style='font-family:"JetBrains Mono",monospace;font-size:0.6rem;
+                                                color:var(--text-muted);text-transform:uppercase;margin-bottom:0.3rem;'>
+                                        Amount
+                                    </div>
+                                    <div style='font-family:"Manrope",sans-serif;font-size:1.1rem;
+                                                font-weight:800;color:{r_color};'>{amt}</div>
+                                </div>
+                                <div style='background:var(--bg-elevated);border:1px solid var(--border);
+                                            border-radius:10px;padding:0.85rem;text-align:center;'>
+                                    <div style='font-family:"JetBrains Mono",monospace;font-size:0.6rem;
+                                                color:var(--text-muted);text-transform:uppercase;margin-bottom:0.3rem;'>
+                                        Category
+                                    </div>
+                                    <div style='font-size:0.82rem;font-weight:600;color:var(--text-primary);'>{category}</div>
+                                </div>
+                                <div style='background:{r_bg};border:1px solid {r_border};
+                                            border-radius:10px;padding:0.85rem;text-align:center;'>
+                                    <div style='font-family:"JetBrains Mono",monospace;font-size:0.6rem;
+                                                color:{r_color};text-transform:uppercase;margin-bottom:0.3rem;'>
+                                        Fraud Prob
+                                    </div>
+                                    <div style='font-family:"Manrope",sans-serif;font-size:1.1rem;
+                                                font-weight:800;color:{r_color};'>{prob_pct}</div>
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
+
+                            with st.spinner("Gemini AI is investigating this transaction..."):
+                                try:
+                                    prompt = f"""You are a senior fraud analyst at a financial institution writing a brief investigation report.
+
+Transaction flagged: #{row_num}
+- Amount: {amt}
+- Merchant category: {category}
+- Fraud probability: {prob_pct}
+- Risk level: {risk}
+
+Write exactly two sections with these headers:
+
+**WHY THIS TRANSACTION WAS FLAGGED:**
+2-3 sentences. Explain specifically what characteristics made the ML model flag this as suspicious. Be concrete — mention the amount, category, and what patterns suggest fraud.
+
+**WHAT THE CUSTOMER SHOULD DO:**
+2-3 sentences. Give clear, specific actions the customer should take right now. Address them directly as "you".
+
+Keep it professional but plain English. No bullet points."""
+
+                                    model    = genai.GenerativeModel("gemini-1.5-flash")
+                                    response = model.generate_content(prompt)
+                                    ai_text  = response.text.strip()
+
+                                    # Parse sections
+                                    why_text = how_text = ""
+                                    lines = ai_text.split("\n")
+                                    current = None
+                                    buf = []
+                                    for line in lines:
+                                        if "WHY" in line.upper() and "FLAGGED" in line.upper():
+                                            current = "why"; buf = []
+                                        elif "CUSTOMER" in line.upper() or "SHOULD DO" in line.upper() or "WHAT THE" in line.upper():
+                                            if current == "why": why_text = " ".join(buf).strip()
+                                            current = "how"; buf = []
+                                        elif current and line.strip() and not line.strip().startswith("**"):
+                                            buf.append(line.strip())
+                                    if current == "how": how_text = " ".join(buf).strip()
+                                    if not why_text: why_text = ai_text[:len(ai_text)//2]
+                                    if not how_text: how_text = ai_text[len(ai_text)//2:]
+
+                                    col_l, col_r = st.columns(2)
+                                    with col_l:
+                                        st.markdown(f"""
+                                        <div style='background:rgba(239,68,68,0.06);
+                                                    border:1px solid rgba(239,68,68,0.2);
+                                                    border-radius:12px;padding:1.25rem;height:100%;'>
+                                            <div style='display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;'>
+                                                <span style='font-size:1.2rem;'>🚨</span>
+                                                <span style='font-family:"JetBrains Mono",monospace;
+                                                             font-size:0.68rem;font-weight:700;
+                                                             color:#F87171;text-transform:uppercase;
+                                                             letter-spacing:0.1em;'>
+                                                    Why It Was Flagged
+                                                </span>
+                                            </div>
+                                            <p style='color:var(--text-secondary);font-size:0.9rem;
+                                                      line-height:1.75;margin:0;'>{why_text}</p>
+                                        </div>
+                                        """, unsafe_allow_html=True)
+                                    with col_r:
+                                        st.markdown(f"""
+                                        <div style='background:rgba(16,185,129,0.06);
+                                                    border:1px solid rgba(16,185,129,0.2);
+                                                    border-radius:12px;padding:1.25rem;height:100%;'>
+                                            <div style='display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;'>
+                                                <span style='font-size:1.2rem;'>✅</span>
+                                                <span style='font-family:"JetBrains Mono",monospace;
+                                                             font-size:0.68rem;font-weight:700;
+                                                             color:#6EE7B7;text-transform:uppercase;
+                                                             letter-spacing:0.1em;'>
+                                                    What You Should Do
+                                                </span>
+                                            </div>
+                                            <p style='color:var(--text-secondary);font-size:0.9rem;
+                                                      line-height:1.75;margin:0;'>{how_text}</p>
+                                        </div>
+                                        """, unsafe_allow_html=True)
+
+                                    st.markdown(f"""
+                                    <div style='margin-top:0.65rem;display:flex;justify-content:flex-end;
+                                                align-items:center;gap:0.5rem;'>
+                                        <span style='font-size:0.8rem;'>✨</span>
+                                        <span style='font-family:"JetBrains Mono",monospace;font-size:0.65rem;
+                                                     color:var(--text-muted);'>
+                                            Generated by Google Gemini 1.5 Flash
+                                        </span>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+
+                                except Exception:
+                                    st.markdown(f"""
+                                    <div style='background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);
+                                                border-radius:10px;padding:1rem;'>
+                                        <div style='font-weight:600;color:var(--amber);margin-bottom:0.4rem;'>
+                                            ⚠️ AI analysis unavailable for this transaction
+                                        </div>
+                                        <p style='color:var(--text-muted);font-size:0.85rem;margin:0;'>
+                                            Transaction #{row_num} ({amt}, {category}) was flagged because its
+                                            spending pattern deviates significantly from legitimate transactions
+                                            in this category. Please review manually and contact your bank
+                                            if you did not authorise this transaction.
+                                        </p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+
+                    if len(fraud_items) > 10:
+                        st.markdown(f"""
+                        <div style='background:var(--bg-elevated);border:1px solid var(--border);
+                                    border-radius:10px;padding:0.85rem;text-align:center;margin-top:0.5rem;'>
+                            <div style='font-family:"JetBrains Mono",monospace;font-size:0.75rem;color:var(--text-muted);'>
+                                AI analysis shown for 10 highest-risk transactions ·
+                                {len(fraud_items)-10} additional flagged transactions visible in the table above
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                elif fraud_items and not GEMINI_AVAILABLE:
+                    st.info("Install google-generativeai to enable AI fraud explanations.")
+
         except Exception as e:
             st.error(f"Error reading file: {e}")
-    else:
-        st.markdown("""
-        <div class='glass' style='text-align:center;padding:3rem;'>
-            <div style='font-size:3rem;margin-bottom:1rem;opacity:0.4;'>📂</div>
-            <div style='font-family:var(--font-display);color:var(--text-muted);'>
-                Upload a CSV file above<br>
-                <span style='color:var(--cyan);'>or download the template to get started</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
 
 # ── HISTORY ───────────────────────────────────────────────────────────────────
 def page_history():
@@ -2806,7 +3614,7 @@ def page_history():
         if len(daily)>1:
             fig_t = go.Figure()
             fig_t.add_trace(go.Scatter(x=daily["date"].astype(str),y=daily["rate"],mode="lines+markers",
-                line=dict(color="#00d4ff",width=2.5),marker=dict(size=7,color="#00d4ff"),
+                line=dict(color="#7C3AED",width=2.5),marker=dict(size=7,color="#7C3AED"),
                 fill="tozeroy",fillcolor="rgba(0,212,255,0.05)"))
             fig_t.update_layout(**CHART_LAYOUT,height=240,yaxis_title="Fraud Rate (%)")
             st.plotly_chart(fig_t,use_container_width=True)
@@ -2822,7 +3630,7 @@ def page_history():
                 labels=[c.replace("_"," ").title() for c in cat_c.index],
                 values=cat_c.values,hole=0.55,textinfo="label+percent",
                 textfont=dict(color="#eef2ff",size=10),
-                marker=dict(colors=["#00d4ff","#00e676","#ffab00","#ff1744","#a78bfa","#38bdf8"],
+                marker=dict(colors=["#7C3AED","#10B981","#F59E0B","#EF4444","#a78bfa","#38bdf8"],
                             line=dict(width=0))))
             fig_c.update_layout(**CHART_LAYOUT,height=240,showlegend=False)
             st.plotly_chart(fig_c,use_container_width=True)
@@ -2873,6 +3681,79 @@ def page_user_management():
         <div class='hero-sub'>Create and manage platform users — new accounts are immediately active</div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Security Alerts — Locked Accounts ─────────────────────────────────────
+    lockouts_df = db_get_active_lockouts()
+    if len(lockouts_df) > 0:
+        st.markdown(f"""
+        <div class='glass glass-danger' style='border-left:4px solid var(--red);margin-bottom:1rem;'>
+            <div style='display:flex;align-items:center;gap:1rem;margin-bottom:1rem;'>
+                <span style='font-size:1.8rem;'>🔒</span>
+                <div>
+                    <div style='font-family:var(--font-display);font-weight:800;color:var(--red);font-size:1rem;'>
+                        Security Alert — {len(lockouts_df)} Locked Account{'s' if len(lockouts_df)>1 else ''}
+                    </div>
+                    <div style='color:var(--text-muted);font-size:0.8rem;margin-top:0.2rem;'>
+                        {'These accounts' if len(lockouts_df)>1 else 'This account'} {'have' if len(lockouts_df)>1 else 'has'} been automatically locked after 3 consecutive failed login attempts.
+                        Admin email notification has been sent. Review and unlock if legitimate.
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        for _, row in lockouts_df.iterrows():
+            users_all = db_get_all_users()
+            user_info = users_all.get(row["username"], {})
+            col_a, col_b, col_c, col_d, col_e = st.columns([1.2, 1.2, 1, 1.2, 1])
+            col_a.markdown(f"""
+            <div style='padding-top:0.4rem;'>
+                <div style='color:var(--red);font-family:var(--font-mono);font-size:0.82rem;font-weight:700;'>
+                    @{row['username']}
+                </div>
+                <div style='color:var(--text-muted);font-size:0.72rem;'>{user_info.get('name','Unknown')}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            col_b.markdown(f"""
+            <div style='color:var(--text-muted);font-family:var(--font-mono);font-size:0.72rem;padding-top:0.4rem;'>
+                Locked at<br><strong style='color:var(--text-secondary);'>{row['locked_at']}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+            col_c.markdown(f"""
+            <div style='padding-top:0.4rem;'>
+                <div style='background:rgba(255,23,68,0.12);border:1px solid rgba(255,23,68,0.25);
+                            border-radius:6px;padding:0.3rem 0.6rem;text-align:center;
+                            font-family:var(--font-mono);font-size:0.75rem;color:var(--red);font-weight:700;'>
+                    {row['attempts']} attempts
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            col_d.markdown(f"""
+            <div style='color:{"#10B981" if row["notified_admin"] else "#F59E0B"};
+                        font-family:var(--font-mono);font-size:0.72rem;padding-top:0.5rem;'>
+                {"Email sent" if row["notified_admin"] else "Email pending"}
+            </div>
+            """, unsafe_allow_html=True)
+            with col_e:
+                if st.button("Unlock Account", key=f"unlock_{row['id']}"):
+                    db_unlock_account(row["username"])
+                    # Clear failed logins for this user in session state
+                    st.session_state.failed_logins.pop(row["username"], None)
+                    add_log(f"Admin unlocked account: {row['username']}")
+                    st.success(f"Account @{row['username']} has been unlocked. They can now log in.")
+                    st.rerun()
+            st.markdown("<hr style='border-color:rgba(255,23,68,0.15);margin:0.4rem 0;'>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class='glass' style='padding:0.85rem 1.2rem;margin-bottom:1rem;border-left:3px solid var(--green);'>
+            <div style='display:flex;align-items:center;gap:0.75rem;'>
+                <span style='font-size:1rem;'>🛡️</span>
+                <div style='font-family:var(--font-mono);font-size:0.75rem;color:var(--green);'>
+                    No security alerts — all accounts are secure
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     users=get_users()
     total=len(users); active=sum(1 for u in users.values() if u.get("status")=="active")
@@ -2978,8 +3859,8 @@ def page_user_management():
     st.markdown("<div class='sec-label'>All Users</div>", unsafe_allow_html=True)
     for uname,info in list(users.items()):
         rc={"admin":"badge-admin","researcher":"badge-research","user":"badge-user"}.get(info["role"],"badge-user")
-        sc="#00e676" if info.get("status")=="active" else "#4a5568"
-        cols=st.columns([1,1.3,0.9,0.8,0.9,1.5,1.3])
+        sc="#10B981" if info.get("status")=="active" else "#4a5568"
+        cols=st.columns([1,1.3,0.9,0.8,0.9,1.5,1.8])
         cols[0].markdown(f"<div style='color:var(--text-primary);font-family:var(--font-mono);font-size:0.8rem;padding-top:0.5rem;'>{uname}</div>",unsafe_allow_html=True)
         cols[1].markdown(f"<div style='color:var(--text-secondary);font-size:0.8rem;padding-top:0.5rem;'>{info['name']}</div>",unsafe_allow_html=True)
         cols[2].markdown(f"<div style='padding-top:0.4rem;'><span class='badge {rc}'>{info['role']}</span></div>",unsafe_allow_html=True)
@@ -3002,7 +3883,7 @@ def page_user_management():
             if uname==st.session_state.username:
                 st.markdown("<div style='color:var(--text-muted);font-size:0.72rem;padding-top:0.6rem;'></div>",unsafe_allow_html=True)
             else:
-                b1,b2=st.columns(2)
+                b1,b2,b3=st.columns(3)
                 with b1:
                     lbl="Deactivate" if info.get("status")=="active" else "Activate"
                     if st.button(lbl,key=f"tog_{uname}"):
@@ -3014,6 +3895,17 @@ def page_user_management():
                     if st.button("Delete",key=f"del_{uname}"):
                         db_delete_user(uname)
                         add_log(f"Admin deleted: {uname}")
+                        st.rerun()
+                with b3:
+                    # MFA Reset button
+                    _, totp_en = db_get_totp_secret(uname)
+                    mfa_label = "Reset MFA" if totp_en else "No MFA"
+                    if st.button(mfa_label, key=f"mfa_{uname}", disabled=not totp_en):
+                        conn = sqlite3.connect(DB_PATH)
+                        conn.execute("UPDATE users SET totp_secret=NULL, totp_enabled=0 WHERE username=?", (uname,))
+                        conn.commit(); conn.close()
+                        add_log(f"Admin reset MFA for: {uname}")
+                        st.success(f"MFA reset for @{uname}. They will set up Google Authenticator again on next login.")
                         st.rerun()
         st.markdown("<hr style='border-color:var(--border);margin:0.3rem 0;'>",unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
@@ -3041,7 +3933,7 @@ def page_audit_logs():
         <div class='hero-grid'></div>
         <div class='hero-eyebrow'>Security & Compliance</div>
         <div class='hero-title'>Audit Logs</div>
-        <div class='hero-sub'>Every action is timestamped and stored in the SQLite database</div>
+        <div class='hero-sub'>Every user action, login attempt, approval, and system event is timestamped and stored permanently</div>
     </div>
     """, unsafe_allow_html=True)
     logs_df=db_get_logs(limit=100)
@@ -3074,9 +3966,9 @@ def page_system_analytics():
     logs_df=db_get_logs(limit=1000)
     st.markdown(f"""
     <div class='kpi-grid'>
-        <div class='kpi'><div class='kpi-label'>Total Predictions</div><div class='kpi-value'>{total}</div></div>
-        <div class='kpi'><div class='kpi-label'>Fraud Detected</div><div class='kpi-value' style='color:var(--red);'>{fraud}</div></div>
-        <div class='kpi'><div class='kpi-label'>Registered Users</div><div class='kpi-value'>{len(users)}</div></div>
+        <div class='kpi'><span class='kpi-icon'>⚡</span><div class='kpi-label'>Total Predictions</div><div class='kpi-value'>{total}</div></div>
+        <div class='kpi'><span class='kpi-icon'>🚨</span><div class='kpi-label'>Fraud Detected</div><div class='kpi-value' style='color:var(--red);'>{fraud}</div></div>
+        <div class='kpi'><span class='kpi-icon'>👥</span><div class='kpi-label'>Registered Users</div><div class='kpi-value'>{len(users)}</div></div>
         <div class='kpi'><div class='kpi-label'>Log Entries</div><div class='kpi-value'>{len(logs_df)}</div></div>
     </div>
     """, unsafe_allow_html=True)
@@ -3086,7 +3978,7 @@ def page_system_analytics():
             st.markdown("<div class='glass glass-cyan'>", unsafe_allow_html=True)
             st.markdown("<div class='sec-label'>Predictions by Outcome</div>", unsafe_allow_html=True)
             fig_pie=px.pie(df_all,names="result",color="result",
-                           color_discrete_map={"Legitimate":"#00e676","Fraudulent":"#ff1744"})
+                           color_discrete_map={"Legitimate":"#10B981","Fraudulent":"#EF4444"})
             fig_pie.update_layout(**CHART_LAYOUT,height=240)
             fig_pie.update_traces(marker_line_width=0)
             st.plotly_chart(fig_pie,use_container_width=True)
@@ -3096,7 +3988,7 @@ def page_system_analytics():
             st.markdown("<div class='sec-label'>Fraud by Category</div>", unsafe_allow_html=True)
             cat_c=df_all[df_all["result"]=="Fraudulent"]["category"].value_counts().head(8)
             if len(cat_c)>0:
-                fig_b=px.bar(x=cat_c.values,y=cat_c.index,orientation="h",color_discrete_sequence=["#ff1744"])
+                fig_b=px.bar(x=cat_c.values,y=cat_c.index,orientation="h",color_discrete_sequence=["#EF4444"])
                 fig_b.update_layout(**CHART_LAYOUT,height=240)
                 fig_b.update_traces(marker_line_width=0)
                 st.plotly_chart(fig_b,use_container_width=True)
@@ -3245,14 +4137,14 @@ def page_model_training():
             fig_m = go.Figure(go.Bar(
                 x=["Precision","Recall","F1-Score"],
                 y=[res["prec"], res["rec"], res["f1"]],
-                marker_color=["#00d4ff","#00e676","#ffab00"],
+                marker_color=["#7C3AED","#10B981","#F59E0B"],
                 marker_line_width=0,
                 text=[f"{v:.2f}" for v in [res["prec"],res["rec"],res["f1"]]],
                 textposition="outside",
                 textfont=dict(color="#eef2ff", size=12)
             ))
             fig_m.update_layout(**CHART_LAYOUT, height=260,
-                                yaxis=dict(range=[0,1.1], gridcolor="rgba(255,255,255,0.05)"))
+                                yaxis_range=[0,1.1])
             st.plotly_chart(fig_m, use_container_width=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -3269,7 +4161,7 @@ def page_model_training():
                         "valueformat":".2f"},
                 gauge={
                     "axis":{"range":[80,100],"tickcolor":"#334155"},
-                    "bar":{"color":"#00d4ff","thickness":0.65},
+                    "bar":{"color":"#7C3AED","thickness":0.65},
                     "bgcolor":"rgba(0,212,255,0.04)",
                     "bordercolor":"rgba(0,0,0,0)",
                     "steps":[
@@ -3277,7 +4169,7 @@ def page_model_training():
                         {"range":[90,95],"color":"rgba(255,171,0,0.08)"},
                         {"range":[95,100],"color":"rgba(0,230,118,0.08)"},
                     ],
-                    "threshold":{"line":{"color":"#00e676","width":2},"thickness":0.8,"value":95}
+                    "threshold":{"line":{"color":"#10B981","width":2},"thickness":0.8,"value":95}
                 }
             ))
             fig_g2.update_layout(paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",
@@ -3298,7 +4190,7 @@ def page_model_training():
                 z=[[tn,fp],[fn,tp]],
                 text=[[f"{tn:,}",f"{fp:,}"],[f"{fn:,}",f"{tp:,}"]],
                 texttemplate="%{text}",
-                colorscale=[[0,"#0a1a2e"],[1,"#00d4ff"]],
+                colorscale=[[0,"#0a1a2e"],[1,"#7C3AED"]],
                 showscale=False, xgap=3, ygap=3,
                 textfont=dict(color="#eef2ff",size=11)
             ))
@@ -3338,15 +4230,15 @@ def page_model_training():
         val_auc    = [0.68 + (res["roc"]-0.05-0.68)*(1-np.exp(-0.25*e)) + np.random.normal(0,0.004) for e in epochs]
         fig_lc = go.Figure()
         fig_lc.add_trace(go.Scatter(x=epochs, y=train_auc, mode="lines+markers",
-            name="Training AUC", line=dict(color="#00d4ff",width=2.5),
-            marker=dict(size=5,color="#00d4ff")))
+            name="Training AUC", line=dict(color="#7C3AED",width=2.5),
+            marker=dict(size=5,color="#7C3AED")))
         fig_lc.add_trace(go.Scatter(x=epochs, y=val_auc, mode="lines+markers",
-            name="Validation AUC", line=dict(color="#00e676",width=2.5,dash="dot"),
-            marker=dict(size=5,color="#00e676")))
+            name="Validation AUC", line=dict(color="#10B981",width=2.5,dash="dot"),
+            marker=dict(size=5,color="#10B981")))
         fig_lc.update_layout(**CHART_LAYOUT, height=260,
                               xaxis_title="Training Iterations",
                               yaxis_title="ROC-AUC Score",
-                              yaxis=dict(range=[0.6,1.0],gridcolor="rgba(255,255,255,0.05)"))
+                              yaxis_range=[0.6,1.0])
         st.plotly_chart(fig_lc, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -3467,7 +4359,7 @@ def page_model_training():
                             labels=["Correct","Incorrect"],
                             values=[correct, total_rows-correct],
                             hole=0.55,
-                            marker=dict(colors=["#00e676","#ff1744"],line=dict(width=0)),
+                            marker=dict(colors=["#10B981","#EF4444"],line=dict(width=0)),
                             textinfo="label+percent",
                             textfont=dict(color="#eef2ff",size=11)
                         ))
@@ -3480,14 +4372,14 @@ def page_model_training():
                         fig_rp = go.Figure(go.Bar(
                             x=["Recall","Precision"],
                             y=[recall_v/100, prec_v/100],
-                            marker_color=["#00e676","#00d4ff"],
+                            marker_color=["#10B981","#7C3AED"],
                             marker_line_width=0,
                             text=[f"{recall_v}%",f"{prec_v}%"],
                             textposition="outside",
                             textfont=dict(color="#eef2ff",size=13)
                         ))
                         fig_rp.update_layout(**CHART_LAYOUT,height=240,
-                                             yaxis=dict(range=[0,1.2],gridcolor="rgba(255,255,255,0.05)"))
+                                             yaxis_range=[0,1.2])
                         st.plotly_chart(fig_rp,use_container_width=True)
                         st.markdown("</div>", unsafe_allow_html=True)
                 else:
@@ -3520,6 +4412,7 @@ def page_model_evaluation():
         <div class='hero-grid'></div>
         <div class='hero-eyebrow'>Research Workspace</div>
         <div class='hero-title'>Model Evaluation</div>
+        <div class='hero-sub'>Compare Bagging, Gradient Boosting, Stacking and Random Forest on precision, recall, F1 and ROC-AUC</div>
     </div>
     """, unsafe_allow_html=True)
     data=pd.DataFrame({"Model":["Random Forest","Bagging","Gradient Boosting","Stacking"],
@@ -3529,7 +4422,7 @@ def page_model_evaluation():
     st.markdown("<div class='sec-label'>Ensemble Comparison — Sparkov Dataset</div>", unsafe_allow_html=True)
     st.dataframe(data,use_container_width=True,hide_index=True)
     fig=px.bar(data,x="Model",y=["Precision","Recall","F1"],barmode="group",
-               color_discrete_map={"Precision":"#00d4ff","Recall":"#ff1744","F1":"#00e676"})
+               color_discrete_map={"Precision":"#7C3AED","Recall":"#06B6D4","F1":"#10B981"})
     fig.update_layout(**CHART_LAYOUT,height=320)
     fig.update_traces(marker_line_width=0)
     st.plotly_chart(fig,use_container_width=True)
@@ -3541,31 +4434,75 @@ def page_feature_analysis():
         <div class='hero-grid'></div>
         <div class='hero-eyebrow'>Research Workspace</div>
         <div class='hero-title'>Feature Importance</div>
+        <div class='hero-sub'>What drives fraud detection — top predictive features from the Bagging ensemble model</div>
     </div>
     """, unsafe_allow_html=True)
-    features={"amt":0.562,"is_night":0.110,"category":0.089,"amt_log":0.084,
-              "amt_to_category_avg":0.081,"trans_hour":0.029,"age_group":0.013,
-              "age":0.008,"city_pop":0.007,"state":0.005,"job":0.004,
-              "gender":0.004,"city":0.003,"trans_day_of_week":0.002,"distance_km":0.002}
-    df=pd.DataFrame(list(features.items()),columns=["Feature","Importance"]).sort_values("Importance")
-    fig=px.bar(df,x="Importance",y="Feature",orientation="h",
-               color="Importance",color_continuous_scale=[[0,"#1a2a4a"],[0.5,"#0066aa"],[1,"#00d4ff"]])
-    fig.update_layout(**CHART_LAYOUT,height=440,coloraxis_showscale=False)
-    fig.update_traces(marker_line_width=0)
-    st.plotly_chart(fig,use_container_width=True)
-    st.markdown("""
-    <div class='glass glass-violet'>
-        <div class='sec-label'>Key Insights</div>
-        <p style='color:var(--text-secondary);font-size:0.9rem;line-height:1.8;margin:0;'>
-        <strong style='color:var(--cyan);'>amt</strong> (0.562) is the dominant fraud predictor —
-        transaction amount anomalies are the clearest fraud signal. &nbsp;
-        <strong style='color:var(--cyan);'>is_night</strong> (0.110) confirms that timing matters significantly.
-        &nbsp;<strong style='color:var(--cyan);'>category</strong> and
-        <strong style='color:var(--cyan);'>amt_to_category_avg</strong> together enable context-aware detection —
-        fraud is identified not just by amount, but by how unusual that amount is for the merchant type.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    features = {"amt":0.562,"is_night":0.110,"category":0.089,"amt_log":0.084,
+                "amt_to_category_avg":0.081,"trans_hour":0.029,"age_group":0.013,
+                "age":0.008,"city_pop":0.007,"state":0.005,"job":0.004,
+                "gender":0.004,"city":0.003,"trans_day_of_week":0.002,"distance_km":0.002}
+    df = pd.DataFrame(list(features.items()),columns=["Feature","Importance"]).sort_values("Importance")
+    c1, c2 = st.columns([1.6,1])
+    with c1:
+        st.markdown("<div class='glass'>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-label'>All Features — Importance Score</div>", unsafe_allow_html=True)
+        fig = px.bar(df,x="Importance",y="Feature",orientation="h",color="Importance",
+                     color_continuous_scale=[[0,"#1E1B4B"],[0.5,"#5B21B6"],[1,"#7C3AED"]])
+        fig.update_layout(**CHART_LAYOUT,height=460,coloraxis_showscale=False,xaxis_title="Importance Score",yaxis_title="")
+        fig.update_traces(marker_line_width=0)
+        st.plotly_chart(fig,use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    with c2:
+        top5 = [
+            ("amt",0.562,"#7C3AED","Transaction amount — strongest fraud signal"),
+            ("is_night",0.110,"#06B6D4","Night hours carry significantly higher risk"),
+            ("category",0.089,"#10B981","Merchant category influences fraud rate"),
+            ("amt_log",0.084,"#F59E0B","Log amount captures extreme value anomalies"),
+            ("amt_to_category_avg",0.081,"#EF4444","Contextual amount vs category average"),
+        ]
+        st.markdown("<div class='glass glass-violet'>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-label'>Top 5 Features Explained</div>", unsafe_allow_html=True)
+        for feat, score, color, desc in top5:
+            bar_w = int(score/0.562*100)
+            st.markdown(f"""
+            <div style='margin-bottom:1rem;'>
+                <div style='display:flex;justify-content:space-between;margin-bottom:0.3rem;'>
+                    <span style='font-family:"JetBrains Mono",monospace;font-size:0.82rem;
+                                 color:var(--text-primary);font-weight:700;'>{feat}</span>
+                    <span style='font-family:"JetBrains Mono",monospace;font-size:0.78rem;
+                                 color:{color};font-weight:700;'>{score:.3f}</span>
+                </div>
+                <div style='height:7px;background:var(--bg-overlay);border-radius:4px;margin-bottom:0.25rem;'>
+                    <div style='height:100%;width:{bar_w}%;background:{color};border-radius:4px;'></div>
+                </div>
+                <div style='color:var(--text-muted);font-size:0.78rem;'>{desc}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class='glass glass-cyan'>
+            <div class='sec-label'>Feature Groups</div>
+            <div style='display:flex;flex-direction:column;gap:0.5rem;'>
+                <div style='background:var(--bg-elevated);border-radius:8px;padding:0.7rem;'>
+                    <div style='font-size:0.85rem;font-weight:600;color:var(--text-primary);'>💰 Amount</div>
+                    <div style='font-size:0.75rem;color:var(--text-muted);'>amt · amt_log · amt_to_category_avg</div>
+                </div>
+                <div style='background:var(--bg-elevated);border-radius:8px;padding:0.7rem;'>
+                    <div style='font-size:0.85rem;font-weight:600;color:var(--text-primary);'>🕐 Time</div>
+                    <div style='font-size:0.75rem;color:var(--text-muted);'>is_night · trans_hour · is_weekend</div>
+                </div>
+                <div style='background:var(--bg-elevated);border-radius:8px;padding:0.7rem;'>
+                    <div style='font-size:0.85rem;font-weight:600;color:var(--text-primary);'>👤 Customer</div>
+                    <div style='font-size:0.75rem;color:var(--text-muted);'>age · age_group · gender · distance_km</div>
+                </div>
+                <div style='background:var(--bg-elevated);border-radius:8px;padding:0.7rem;'>
+                    <div style='font-size:0.85rem;font-weight:600;color:var(--text-primary);'>🏪 Merchant</div>
+                    <div style='font-size:0.75rem;color:var(--text-muted);'>category · city_pop · state</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
 
 def page_export():
     st.markdown("""
@@ -3664,7 +4601,7 @@ def page_active_sessions():
 
     st.markdown(f"""
     <div class='kpi-grid' style='grid-template-columns:repeat(3,1fr);'>
-        <div class='kpi'><div class='kpi-label'>Active Sessions</div>
+        <div class='kpi'><span class='kpi-icon'>🖥️</span><div class='kpi-label'>Active Sessions</div>
             <div class='kpi-value' style='color:var(--green);'>{len(active_ses)}</div></div>
         <div class='kpi'><div class='kpi-label'>Total Users</div>
             <div class='kpi-value'>{len(get_users())}</div></div>
@@ -3804,9 +4741,9 @@ def page_roc_pr_curves():
         return fpr.tolist(), tpr.tolist()
 
     models_data = {
-        "Random Forest":    {"auc":0.9943,"color":"#00d4ff","pr_auc":0.82},
-        "Bagging":          {"auc":0.9777,"color":"#00e676","pr_auc":0.79},
-        "Gradient Boosting":{"auc":0.9908,"color":"#ffab00","pr_auc":0.71},
+        "Random Forest":    {"auc":0.9943,"color":"#7C3AED","pr_auc":0.82},
+        "Bagging":          {"auc":0.9777,"color":"#10B981","pr_auc":0.79},
+        "Gradient Boosting":{"auc":0.9908,"color":"#F59E0B","pr_auc":0.71},
         "Stacking":         {"auc":0.9948,"color":"#a78bfa","pr_auc":0.84},
     }
 
@@ -3867,7 +4804,7 @@ def page_roc_pr_curves():
             text = [[f"{v:,}" for v in row] for row in cm]
             fig_cm = go.Figure(go.Heatmap(
                 z=z, text=text, texttemplate="%{text}",
-                colorscale=[[0,"#0a1a2e"],[1,"#00d4ff"]],
+                colorscale=[[0,"#0a1a2e"],[1,"#7C3AED"]],
                 showscale=False,
                 xgap=2, ygap=2,
             ))
@@ -3917,9 +4854,9 @@ def page_model_radar():
 
     categories   = ["Precision","Recall","F1-Score","ROC-AUC","Speed","Interpretability"]
     models_radar = {
-        "Random Forest":    {"vals":[0.66, 0.88, 0.75, 0.99, 0.70, 0.80],"color":"#00d4ff","fill":"rgba(0,212,255,0.08)"},
-        "Bagging":          {"vals":[0.79, 0.85, 0.82, 0.98, 0.65, 0.75],"color":"#00e676","fill":"rgba(0,230,118,0.08)"},
-        "Gradient Boosting":{"vals":[0.18, 0.92, 0.29, 0.99, 0.40, 0.60],"color":"#ffab00","fill":"rgba(255,171,0,0.08)"},
+        "Random Forest":    {"vals":[0.66, 0.88, 0.75, 0.99, 0.70, 0.80],"color":"#7C3AED","fill":"rgba(0,212,255,0.08)"},
+        "Bagging":          {"vals":[0.79, 0.85, 0.82, 0.98, 0.65, 0.75],"color":"#10B981","fill":"rgba(0,230,118,0.08)"},
+        "Gradient Boosting":{"vals":[0.18, 0.92, 0.29, 0.99, 0.40, 0.60],"color":"#F59E0B","fill":"rgba(255,171,0,0.08)"},
         "Stacking":         {"vals":[0.26, 0.94, 0.41, 0.99, 0.30, 0.50],"color":"#a78bfa","fill":"rgba(167,139,250,0.08)"},
     }
 
@@ -3993,110 +4930,74 @@ def page_model_radar():
         </p>
     </div>
     """, unsafe_allow_html=True)
-    st.markdown("""
-    <div class='hero-wrap'>
-        <div class='hero-grid'></div>
-        <div class='hero-eyebrow'>Platform Information</div>
-        <div class='hero-title'>About FraudShield</div>
-        <div class='hero-sub'>Gemini-Powered Credit Card Fraud Detection and Explanation Platform</div>
-    </div>
-    <div class='glass glass-violet'>
-        <div class='sec-label'>AI Engine <span class='badge badge-gemini'>Gemini 1.5 Flash</span></div>
-        <p style='color:var(--text-secondary);line-height:1.8;margin:0;'>
-        Every fraud prediction is explained by Google Gemini 1.5 Flash in real-time. The system sends transaction
-        details, risk factors, and model output to Gemini, which generates a professional, contextual explanation
-        suitable for bank analysts. This replaces generic rule-based text with genuinely intelligent analysis.
-        </p>
-    </div>
-    <div class='glass glass-cyan'>
-        <div class='sec-label'>System Architecture</div>
-        <p style='color:var(--text-secondary);line-height:1.8;margin:0;'>
-        FraudShield combines a Bagging ensemble model (ROC-AUC 0.9926, Recall 96%) trained on the Sparkov
-        dataset with Gemini AI explanations, SQLite persistent storage, role-based access control, two-factor
-        authentication, live user management, single and batch transaction analysis, and a professional dashboard.
-        </p>
-    </div>
-    <div class='glass'>
-        <div class='sec-label'>Technology Stack</div>
-        <div style='display:flex;flex-wrap:wrap;gap:0.5rem;'>
-            <span class='chip'>Python 3.11</span>
-            <span class='chip'>Scikit-learn</span>
-            <span class='chip'>FastAPI</span>
-            <span class='chip'>Streamlit</span>
-            <span class='chip'>Plotly</span>
-            <span class='chip'>Google Gemini</span>
-            <span class='chip'>SQLite</span>
-            <span class='chip'>SMOTE</span>
-            <span class='chip'>Bagging Ensemble</span>
-            <span class='chip'>2FA</span>
-            <span class='chip'>RBAC</span>
-        </div>
-    </div>
-    <div class='glass'>
-        <div class='sec-label'>Dataset</div>
-        <p style='color:var(--text-secondary);margin:0;'>
-            Sparkov Credit Card Transactions · 1,296,675 transactions · 24 real-world features · 0.617% fraud rate
-            <br><span style='font-family:var(--font-mono);font-size:0.75rem;color:var(--text-muted);'>
-            kaggle.com/datasets/kartik2112/fraud-detection
-            </span>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ── ROUTER ────────────────────────────────────────────────────────────────────
 def main():
-    # Force sidebar open via JS on every render
-    st.markdown("""
-    <script>
+    # Inject theme CSS first
+    inject_css(st.session_state.get("theme","dark"))
+
+    # Floating theme toggle — top right corner, always visible
+    current_theme = st.session_state.get("theme","dark")
+    toggle_label  = "☀️ Light" if current_theme=="dark" else "🌙 Dark"
+    st.markdown("<div class='theme-toggle-float'>", unsafe_allow_html=True)
+    if st.button(toggle_label, key="theme_float"):
+        st.session_state.theme = "light" if current_theme=="dark" else "dark"
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # Fix </div> leak + force sidebar open
+    st.markdown("""<script>
     (function() {
-        function openSidebar() {
-            var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-            var collapsed = window.parent.document.querySelector('[data-testid="collapsedControl"]');
-            if (collapsed) { collapsed.click(); }
+        function cleanSidebar() {
+            try {
+                var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+                if (!sidebar) return;
+                // Find all paragraph elements in the sidebar
+                sidebar.querySelectorAll('p').forEach(function(p) {
+                    var t = p.textContent.trim();
+                    if (t === '</div>' || t === '<div>' || t === '<div' || t === '/div>') {
+                        var el = p.closest('.element-container') || p.closest('.stMarkdown') || p;
+                        if (el) el.style.cssText = 'display:none!important;height:0!important;margin:0!important;padding:0!important;';
+                    }
+                });
+            } catch(e) {}
         }
-        // Run after short delay to let Streamlit render
-        setTimeout(function() {
-            var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-            if (sidebar) {
-                var style = window.parent.getComputedStyle(sidebar);
-                var transform = style.getPropertyValue('transform');
-                // If sidebar is translated off screen, click the expand button
-                if (transform && transform.includes('matrix') && transform !== 'none') {
-                    var btn = window.parent.document.querySelector('[data-testid="collapsedControl"]');
-                    if (btn) btn.click();
+        // Run immediately, on load, and every 300ms
+        cleanSidebar();
+        document.addEventListener('DOMContentLoaded', cleanSidebar);
+        setInterval(cleanSidebar, 300);
+        // Open sidebar if collapsed
+        setTimeout(function(){
+            try {
+                var s = window.parent.document.querySelector('[data-testid="stSidebar"]');
+                if (s) {
+                    var t = window.parent.getComputedStyle(s).transform;
+                    if (t && t.includes('matrix') && t !== 'none') {
+                        var b = window.parent.document.querySelector('[data-testid="collapsedControl"]');
+                        if (b) b.click();
+                    }
                 }
-            }
+            } catch(e) {}
         }, 300);
     })();
-    </script>
-    """, unsafe_allow_html=True)
+    </script>""", unsafe_allow_html=True)
+    if st.session_state.get("totp_setup_pending"):
+        page_totp_setup(); return
+    if st.session_state.get("totp_verify_pending"):
+        page_totp_verify(); return
     if st.session_state.otp_pending:
         page_2fa(); return
-    if st.session_state.get("show_register"):
-        page_register(); return
     if st.session_state.get("show_reset_pw"):
         page_reset_password(); return
     if not st.session_state.logged_in:
         page_login(); return
 
-    page = render_sidebar()
     role = st.session_state.role
 
-    # If a dashboard quick-nav button was clicked, sync the radio key and use that page
-    if st.session_state.nav_page:
-        nav = st.session_state.nav_page
-        st.session_state.nav_page = None
-        # Sync the correct radio key so sidebar highlights correctly
-        if role == "admin":
-            st.session_state.admin_nav = nav
-        elif role == "researcher":
-            st.session_state.res_nav = nav
-        else:
-            st.session_state.user_nav = nav
-        page = nav
+    # Handle nav_page from quick-action buttons BEFORE render_sidebar
+    if st.session_state.get("nav_page"):
+        st.session_state.current_page = st.session_state.nav_page
+        st.session_state.nav_page     = None
 
-    # Always keep current_page in sync so sidebar highlights correctly
-    st.session_state.current_page = page
+    page = render_sidebar()
 
     if role=="admin":
         if   "Dashboard"         in page: page_dashboard()
