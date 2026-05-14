@@ -1,0 +1,152 @@
+Run started:2026-05-14 09:15:57.393789+00:00
+
+Test results:
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b110_try_except_pass.html
+   Location: .\streamlit_app.py:380:4
+379	        c.execute("ALTER TABLE users ADD COLUMN totp_secret TEXT DEFAULT NULL")
+380	    except: pass
+381	    try:
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b110_try_except_pass.html
+   Location: .\streamlit_app.py:383:4
+382	        c.execute("ALTER TABLE users ADD COLUMN totp_enabled INTEGER DEFAULT 0")
+383	    except: pass
+384	    conn.commit(); conn.close()
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'admin123'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: .\streamlit_app.py:612:19
+611	DEFAULT_USERS = {
+612	    "admin":      {"password":"admin123",    "role":"admin",      "name":"System Admin",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+613	    "researcher": {"password":"research123", "role":"researcher", "name":"Dr. Research",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'research123'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: .\streamlit_app.py:613:19
+612	    "admin":      {"password":"admin123",    "role":"admin",      "name":"System Admin",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+613	    "researcher": {"password":"research123", "role":"researcher", "name":"Dr. Research",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+614	    "user1":      {"password":"user123",     "role":"user",       "name":"John Analyst",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'user123'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: .\streamlit_app.py:614:19
+613	    "researcher": {"password":"research123", "role":"researcher", "name":"Dr. Research",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+614	    "user1":      {"password":"user123",     "role":"user",       "name":"John Analyst",  "status":"active","created":"2024-01-01","email":"mdrprashan10@gmail.com"},
+615	}
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: ''
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: .\streamlit_app.py:620:39
+619	            "otp_email_sent":False,"otp_email_addr":"",
+620	            "totp_setup_pending":False,"totp_setup_secret":"","totp_setup_username":"",
+621	            "totp_verify_pending":False,"totp_verify_username":"",
+622	            "users":None,
+623	            "pending_users":[],"show_register":False,"show_reset_pw":False,
+624	            "reset_otp":"","reset_username":"","reset_step":1,"reset_email_sent":False,
+625	            "session_token":"","failed_logins":{},"announcements":[],
+626	            "nav_page":None,"current_page":"🏠  Dashboard",
+627	            "theme":"dark"}.items():
+628	    if k not in st.session_state: st.session_state[k]=v
+629	
+630	st.session_state.users = db_get_all_users()
+631	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: ''
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: .\streamlit_app.py:625:12
+624	            "reset_otp":"","reset_username":"","reset_step":1,"reset_email_sent":False,
+625	            "session_token":"","failed_logins":{},"announcements":[],
+626	            "nav_page":None,"current_page":"🏠  Dashboard",
+627	            "theme":"dark"}.items():
+628	    if k not in st.session_state: st.session_state[k]=v
+629	
+630	st.session_state.users = db_get_all_users()
+631	
+632	def get_users():
+633	    return db_get_all_users()
+634	
+635	if not st.session_state.logged_in:
+636	    try:
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b110_try_except_pass.html
+   Location: .\streamlit_app.py:648:4
+647	                st.session_state.session_token = token
+648	    except Exception:
+649	        pass
+650	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b110_try_except_pass.html
+   Location: .\streamlit_app.py:685:4
+684	        if r.status_code==200: return r.json()
+685	    except: pass
+686	    return None
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b110_try_except_pass.html
+   Location: .\streamlit_app.py:1207:12
+1206	            try: st.query_params.clear()
+1207	            except: pass
+1208	            for k in ["logged_in","username","role","user_name","user_email","otp_pending","otp_code","otp_username","last_result","last_inputs","session_token","totp_setup_pending","totp_verify_pending"]:
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b110_try_except_pass.html
+   Location: .\streamlit_app.py:1805:8
+1804	            if exp>now: active_ses.append(row)
+1805	        except: pass
+1806	    st.markdown(f"""<div class='kpi-grid' style='grid-template-columns:repeat(3,1fr);'>
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 1730
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 11
+		Medium: 0
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 5
+		High: 6
+Files skipped (0):

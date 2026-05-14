@@ -7,6 +7,7 @@ import plotly.express as px
 from datetime import datetime
 import time
 import random
+import secrets
 import sqlite3
 import os
 import copy
@@ -634,7 +635,20 @@ footer    {{ visibility: hidden; }}
 [data-testid="stStatusWidget"] {{ display: none !important; }}
 .stDeployButton                {{ display: none !important; }}
 
-/* ─────────────── FIX BLANK BOXES AND </div> LEAK ─────────────── */
+/* ─────────────── HIDE ORPHANED HTML TAGS ─────────────── */
+/* Catches </div> and similar tags rendered as visible text */
+.stMarkdown p:empty {{
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}}
+.element-container:has(.stMarkdown p:empty) {{
+    display: none !important;
+}}
+
+/* ─────────────── HIDE BLANK BOXES ─────────────── */
 div[data-testid="stVerticalBlock"] > div:empty,
 div[data-testid="stVerticalBlockBorderWrapper"]:empty,
 .element-container:empty {{ display: none !important; }}
@@ -1623,7 +1637,7 @@ def page_2fa():
         with c2:
             # Resend code
             if st.button("📧  Resend"):
-                new_otp    = str(random.randint(100000,999999))
+                new_otp = str(secrets.randbelow(900000) + 100000)
                 user_email = st.session_state.otp_email_addr
                 user_name  = get_users().get(st.session_state.otp_username,{}).get("name","")
                 sent       = notify_2fa_otp(user_name, new_otp, user_email) if user_email else False
@@ -1983,7 +1997,7 @@ def page_reset_password():
                     if user.get("email","").lower() != r_email.lower():
                         st.error("Email does not match the registered email for this account.")
                     else:
-                        otp = str(random.randint(100000, 999999))
+                        otp = str(secrets.randbelow(900000) + 100000)
                         st.session_state.reset_otp      = otp
                         st.session_state.reset_username = r_username
                         sent = notify_password_reset_otp(user["name"], otp, r_email)
@@ -2225,8 +2239,6 @@ def render_sidebar():
             st.session_state.current_page = page
 
         # Spacer then Sign Out at bottom
-        st.markdown("<div style='margin-top:1.25rem;'>", unsafe_allow_html=True)
-
         # Sign Out button styled like reference (orange accent)
         st.markdown("""
         <style>
@@ -2235,6 +2247,7 @@ def render_sidebar():
             border: 1px solid rgba(239,68,68,0.3) !important;
             color: #F87171 !important;
             font-weight: 600 !important;
+            margin-top: 1.25rem !important;
         }
         div[data-testid="stButton"]:has(button[key="signout_btn"]) > button:hover {
             background: rgba(239,68,68,0.2) !important;
@@ -2255,7 +2268,6 @@ def render_sidebar():
                 if k in st.session_state:
                     st.session_state[k] = False if k=="logged_in" else ""
             st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
 
         try:
             r  = requests.get("http://127.0.0.1:8000/health",timeout=2)
@@ -2264,64 +2276,67 @@ def render_sidebar():
 
         # System status panel
         lockouts_count = len(db_get_active_lockouts()) if st.session_state.role=="admin" else 0
-        lockout_html = ""
-        if lockouts_count > 0:
-            lockout_html = f"""
-                <div style='display:flex;align-items:center;justify-content:space-between;
-                            margin-top:0.25rem;padding-top:0.5rem;border-top:1px solid rgba(239,68,68,0.2);'>
-                    <span style='display:flex;align-items:center;gap:0.4rem;
-                                 font-family:var(--font-mono);font-size:0.78rem;color:#F87171;'>
-                        <span class='dot dot-red'></span>Locked
-                    </span>
-                    <span style='font-family:var(--font-mono);font-size:0.78rem;
-                                 color:#F87171;font-weight:700;'>{lockouts_count}</span>
-                </div>"""
 
-        st.markdown(f"""
-        <div style='margin-top:1rem;padding:1rem;background:var(--bg-elevated);
-                    border:1px solid var(--border);border-radius:10px;'>
-            <div style='font-family:var(--font-mono);font-size:0.68rem;font-weight:600;
-                        color:var(--text-muted);text-transform:uppercase;
-                        letter-spacing:0.12em;margin-bottom:0.75rem;'>System Status</div>
-            <div style='display:flex;flex-direction:column;gap:0.5rem;'>
-                <div style='display:flex;align-items:center;justify-content:space-between;'>
-                    <span style='display:flex;align-items:center;gap:0.5rem;
-                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
-                        <span class='dot {"dot-green" if ok else "dot-red"}'></span>FastAPI
-                    </span>
-                    <span style='font-family:var(--font-mono);font-size:0.75rem;
-                                 color:{"var(--green)" if ok else "var(--red)"};font-weight:600;'>
-                        {"Online" if ok else "Offline"}
-                    </span>
-                </div>
-                <div style='display:flex;align-items:center;justify-content:space-between;'>
-                    <span style='display:flex;align-items:center;gap:0.5rem;
-                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
-                        <span class='dot dot-cyan'></span>Gemini AI
-                    </span>
-                    <span style='font-family:var(--font-mono);font-size:0.75rem;
-                                 color:var(--cyan);font-weight:600;'>Active</span>
-                </div>
-                <div style='display:flex;align-items:center;justify-content:space-between;'>
-                    <span style='display:flex;align-items:center;gap:0.5rem;
-                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
-                        <span class='dot dot-green'></span>Database
-                    </span>
-                    <span style='font-family:var(--font-mono);font-size:0.75rem;
-                                 color:var(--green);font-weight:600;'>Connected</span>
-                </div>
-                <div style='display:flex;align-items:center;justify-content:space-between;'>
-                    <span style='display:flex;align-items:center;gap:0.5rem;
-                                 font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>
-                        <span class='dot dot-amber'></span>Users
-                    </span>
-                    <span style='font-family:var(--font-mono);font-size:0.75rem;
-                                 color:var(--amber);font-weight:600;'>{len(get_users())}</span>
-                </div>
-                {lockout_html}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        api_color  = "var(--green)" if ok else "var(--red)"
+        api_dot    = "dot-green" if ok else "dot-red"
+        api_label  = "Online" if ok else "Offline"
+        user_count = len(get_users())
+
+        lockout_row = ""
+        if lockouts_count > 0:
+            lockout_row = (
+                "<div style='display:flex;align-items:center;justify-content:space-between;"
+                "margin-top:0.25rem;padding-top:0.5rem;border-top:1px solid rgba(239,68,68,0.2);'>"
+                "<span style='display:flex;align-items:center;gap:0.4rem;"
+                "font-family:var(--font-mono);font-size:0.78rem;color:#F87171;'>"
+                "<span class='dot dot-red'></span>Locked"
+                "</span>"
+                "<span style='font-family:var(--font-mono);font-size:0.78rem;"
+                "color:#F87171;font-weight:700;'>" + str(lockouts_count) + "</span>"
+                "</div>"
+            )
+
+        system_html = (
+            "<div style='margin-top:1rem;padding:1rem;background:var(--bg-elevated);"
+            "border:1px solid var(--border);border-radius:10px;'>"
+            "<div style='font-family:var(--font-mono);font-size:0.68rem;font-weight:600;"
+            "color:var(--text-muted);text-transform:uppercase;"
+            "letter-spacing:0.12em;margin-bottom:0.75rem;'>System Status</div>"
+            "<div style='display:flex;flex-direction:column;gap:0.5rem;'>"
+
+            "<div style='display:flex;align-items:center;justify-content:space-between;'>"
+            "<span style='display:flex;align-items:center;gap:0.5rem;"
+            "font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>"
+            "<span class='dot " + api_dot + "'></span>FastAPI</span>"
+            "<span style='font-family:var(--font-mono);font-size:0.75rem;"
+            "color:" + api_color + ";font-weight:600;'>" + api_label + "</span></div>"
+
+            "<div style='display:flex;align-items:center;justify-content:space-between;'>"
+            "<span style='display:flex;align-items:center;gap:0.5rem;"
+            "font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>"
+            "<span class='dot dot-cyan'></span>Gemini AI</span>"
+            "<span style='font-family:var(--font-mono);font-size:0.75rem;"
+            "color:var(--cyan);font-weight:600;'>Active</span></div>"
+
+            "<div style='display:flex;align-items:center;justify-content:space-between;'>"
+            "<span style='display:flex;align-items:center;gap:0.5rem;"
+            "font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>"
+            "<span class='dot dot-green'></span>Database</span>"
+            "<span style='font-family:var(--font-mono);font-size:0.75rem;"
+            "color:var(--green);font-weight:600;'>Connected</span></div>"
+
+            "<div style='display:flex;align-items:center;justify-content:space-between;'>"
+            "<span style='display:flex;align-items:center;gap:0.5rem;"
+            "font-family:var(--font-mono);font-size:0.78rem;color:var(--text-secondary);'>"
+            "<span class='dot dot-amber'></span>Users</span>"
+            "<span style='font-family:var(--font-mono);font-size:0.75rem;"
+            "color:var(--amber);font-weight:600;'>" + str(user_count) + "</span></div>"
+
+            + lockout_row +
+            "</div></div>"
+        )
+
+        st.markdown(system_html, unsafe_allow_html=True)
 
         # Theme toggle button
         current_theme = st.session_state.get("theme","dark")
@@ -4946,24 +4961,34 @@ def main():
     # Fix </div> leak + force sidebar open
     st.markdown("""<script>
     (function() {
-        function cleanSidebar() {
+        var ORPHAN_TAGS = ['</div>', '<div>', '</span>', '<span>', '</p>', '<p>',
+                           '</section>', '<section>', '</article>', '<article>'];
+
+        function hideOrphanedTags() {
             try {
-                var sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-                if (!sidebar) return;
-                // Find all paragraph elements in the sidebar
-                sidebar.querySelectorAll('p').forEach(function(p) {
-                    var t = p.textContent.trim();
-                    if (t === '</div>' || t === '<div>' || t === '<div' || t === '/div>') {
-                        var el = p.closest('.element-container') || p.closest('.stMarkdown') || p;
-                        if (el) el.style.cssText = 'display:none!important;height:0!important;margin:0!important;padding:0!important;';
+                var doc = window.parent.document;
+                // Target ALL stMarkdown paragraphs across the whole page
+                doc.querySelectorAll('.stMarkdown p, .stMarkdown div').forEach(function(el) {
+                    var txt = el.textContent.trim();
+                    if (ORPHAN_TAGS.indexOf(txt) !== -1 || txt === '') {
+                        var container = el.closest('.element-container') ||
+                                        el.closest('.stMarkdown') || el;
+                        if (container) {
+                            container.style.cssText =
+                                'display:none!important;height:0!important;' +
+                                'margin:0!important;padding:0!important;' +
+                                'overflow:hidden!important;line-height:0!important;';
+                        }
                     }
                 });
             } catch(e) {}
         }
-        // Run immediately, on load, and every 300ms
-        cleanSidebar();
-        document.addEventListener('DOMContentLoaded', cleanSidebar);
-        setInterval(cleanSidebar, 300);
+
+        // Run immediately and keep running
+        hideOrphanedTags();
+        setInterval(hideOrphanedTags, 250);
+        document.addEventListener('DOMContentLoaded', hideOrphanedTags);
+
         // Open sidebar if collapsed
         setTimeout(function(){
             try {
@@ -4971,7 +4996,8 @@ def main():
                 if (s) {
                     var t = window.parent.getComputedStyle(s).transform;
                     if (t && t.includes('matrix') && t !== 'none') {
-                        var b = window.parent.document.querySelector('[data-testid="collapsedControl"]');
+                        var b = window.parent.document.querySelector(
+                            '[data-testid="collapsedControl"]');
                         if (b) b.click();
                     }
                 }
