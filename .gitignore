@@ -27,3 +27,5 @@ build/
 Thumbs.dbdata/ 
 data/raw/creditcard.csv
 data/raw/fraudTrain.csv
+data/raw/*.csv
+data/raw/*.zip
